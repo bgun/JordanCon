@@ -6,10 +6,12 @@ import {
   Dimensions,
   InteractionManager,
   ListView,
+  Modal,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
+  TouchableHighlight,
   View
 } from 'react-native';
 
@@ -78,6 +80,7 @@ class ScheduleScreen extends Component {
 
     this.state = {
       dataSource: ds.cloneWithRowsAndSections(dataBlob, sectionIDs, rowIDs),
+      modalVisible: false,
       searchResults: []
     };
   }
@@ -138,6 +141,36 @@ class ScheduleScreen extends Component {
           <Icon style={ styles.searchIcon } name="magnifying-glass" size={ 24 } color={ '#00000066' } />
           <TextInput placeholder="Search for an event" style={ styles.filterInput } value={ this.state.filterText } onChangeText={ this.handleFilterInput.bind(this) } />
         </View>
+        
+        <Modal
+          animationType="fade"
+          transparent={ true }
+          visible={ this.state.modalVisible }>
+          <View style={{ backgroundColor: '#FFF', flex: 1, display: 'flex', padding: 20, marginLeft: 20, marginRight: 20, marginTop: 40, marginBottom: 40 }}>
+            <View>
+              <TouchableHighlight
+                onPress={ () => {
+                  this.setState({ modalVisible: !this.state.modalVisible })
+                }}>
+                <Text>Hide Modal</Text>
+              </TouchableHighlight>
+              <ScrollView style={ styles.container }>
+                <MenuItem key="directions" link="Directions" text="Address & Directions" icon="pin"    { ...this.props } />
+                <MenuItem key="hotelmap"   link="HotelMap"   text="Hotel Map"            icon="map"    { ...this.props } />
+                <MenuItem key="feedback"   link="Feedback"   text="Feedback"             icon="pencil" { ...this.props } />
+                <MenuItem key="about"      link="About"      text="About"                icon="help"   { ...this.props } />
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
+
+        <TouchableHighlight
+          style={{ position: 'absolute', width: window.width, top: 39, backgroundColor: 'red' }}
+          onPress={() => {
+            this.setState({ modalVisible: true });
+          }}>
+          <Text>Show Modal</Text>
+        </TouchableHighlight>
       </View>
     );
   }
@@ -180,7 +213,7 @@ const styles = StyleSheet.create({
   scroll: {
     backgroundColor: '#FFFFFF',
     flex: 1,
-    marginTop: 39
+    marginTop: 80
   },
   searchIcon: {
     position: 'absolute',
