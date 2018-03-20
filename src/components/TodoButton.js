@@ -17,15 +17,12 @@ import globalStyles from '../globalStyles';
 export default class FeedbackButton extends Component {
 
   handleAddTodo() {
-    console.log("todos");
-    global.todos.add(this.props.event.event_id);
-    dataStore.saveTodos();
+    global.Store.addTodo(this.props.event.event_id);
     this.forceUpdate();
   }
 
   handleRemoveTodo() {
-    global.todos.delete(this.props.event.event_id);
-    dataStore.saveTodos();
+    globalStore.removeTodo(this.props.event.event_id);
     this.forceUpdate();
   }
 

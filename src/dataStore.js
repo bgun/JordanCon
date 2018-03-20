@@ -10,6 +10,7 @@ import {
 
 import packageJson from '../package.json';
 
+const DAYS_OF_WEEK = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
 let fetchOptions = {
   headers: {
@@ -20,12 +21,72 @@ let fetchOptions = {
 
 
 // this needs to exist in case an EventItem is rendered before todos are created
-global.todos = new Set();
 
+export default class DataStore {
 
-export default {
+  constructor(cb) {
+    Promise.all([
+      this._fetchFromStorage(),
+      this._fetchFromNetwork(),
+      this._fetchTodos()
+    ]).then(results => {
+      let msg = "";
+      let storageData = results[0];
+      let networkData = results[1];
+      let todosData   = results[2];
+      let con_data = {};
 
-  fetchFromNetwork: () => {
+      if (!todosData) {
+        todosData = new Set();
+      }
+
+      if (storageData && networkData) {
+        // we have both, take whichever is newer
+        if (storageData.updated >= networkData.updated) {
+          msg = "No schedule updates found.";
+          con_data = storageData;
+        } else {
+          msg = "Found schedule updates. Loading...";
+          con_data = networkData;
+          dataStore.saveToStorage(con_data);
+        }
+      } else if (storageData) {
+        // network failure, use stored data
+        con_data = storageData;
+        msg = "No Internet connection. Using stored data from device.";
+      } else if (networkData) {
+        // first time we are running the app, download from network
+        con_data = networkData;
+        msg = "First time using app. Downloading schedule data...";
+        dataStore.saveToStorage(con_data);
+      } else {
+        // first time we are running the app, and we have no connection. Bummer.
+        msg = "First time, no connection";
+      }
+
+      this._data = con_data;
+      this._data.guests = _.sortBy(this._data.guests, 'name');
+      this._data.todos = todosData;
+      let all_events = [];
+      Object.keys(this._data.events).forEach(k => {
+        all_events = all_events.concat(this._data.events[k]);
+      });
+      all_events = _.sortBy(all_events, ["day", "time"]).map(e => {
+        let momentDate = moment(e.day+e.time, "YYYY-MM-DDThh:mm:ss");
+        e.momentDate = momentDate;
+        e.formattedDate = momentDate.format('dddd h:mma'); // "Friday 2:30pm"
+        e.dayOfWeek = DAYS_OF_WEEK[momentDate.day()];
+        return e;
+      });
+      this._data.sortedEvents = all_events;
+
+      cb({
+        msg: msg
+      });
+    }).done();
+  }
+
+  _fetchFromNetwork() {
     return new Promise((resolve, reject) => {
       console.log("Fetching from", packageJson.CON_INFO_URL);
       fetch(packageJson.CON_INFO_URL, fetchOptions)
@@ -39,9 +100,9 @@ export default {
         })
         .done();
     });
-  },
+  }
 
-  fetchFromStorage: () => {
+  _fetchFromStorage() {
     return new Promise((resolve, reject) => {
       AsyncStorage.getItem('con_data')
         .then(resp => {
@@ -54,7 +115,7 @@ export default {
     });
   },
 
-  saveToStorage: (data) => {
+  saveToStorage(data) {
     return new Promise((resolve, reject) => {
       let str = JSON.stringify(data);
       AsyncStorage.setItem('con_data', str)
@@ -66,14 +127,13 @@ export default {
         })
         .done();
     });
-  },
+  }
 
-  fetchTodos: () => {
+  _fetchTodos() {
     return new Promise((resolve, reject) => {
       AsyncStorage.getItem('todo')
         .then(resp => {
           let todos = new Set(JSON.parse(resp));
-          global.todos = todos;
           resolve(todos);
         })
         .catch(e => {
@@ -82,10 +142,95 @@ export default {
         })
         .done();
     });
-  },
+  }
 
-  saveTodos: () => {
-    let todo_array = Array.from(global.todos);
+
+  addTodo(item) {
+    this._data.todos.add(item);
+    this._saveTodos();
+  }
+
+  getAllEvents() {
+    return this._data.sortedEvents;
+  }
+
+  getContent(key) {
+    return this._data.content[key];
+  }
+
+  getConName() {
+    return this._data.name;
+  }
+
+  getDimension(key) {
+    return this._data.dimensions[key];
+  }
+
+  getEventById(event_id) {
+    let ev = _.find(this.getAllEvents(), e => (e.event_id === event_id));
+    if (!ev) {
+      throw new Error("Event not found!");
+    }
+    return ev;
+  }
+
+  getEventsForGuest(guest_id) {
+    return this._data.events
+      .filter(e => _.includes(e.guest_list, guest_id))
+      .map(e => e.event_id);
+  }
+
+  getGuests() {
+    return this._data.guests;
+  }
+
+  getGuestById(guest_id) {
+    let guest = this._data.guests.filter(g => (g.guest_id === guest_id))[0];
+    if (!guest) {
+      throw new Error("Guest not found");
+    }
+    return guest;
+  }
+  
+  getImage(key) {
+    return this._data.images[key];
+  }
+
+  getTodos() {
+    return this._data.todos;
+    this._fetchTodos()
+      .then(todos => {
+        let todosArray = Array.from(todos);
+        todosArray = _(todosArray).map(todo => {
+          return _.find(global.con_data.events, e => e.event_id === todo);
+        }).filter(todo => !!todo).sortBy(["day", "time"]).value();
+
+        this.setState({
+          dataSource: this.state.dataSource.cloneWithRows(todosArray),
+          todoCount: todosArray.length
+        });
+      }).done();
+  }
+
+  getTracks() {
+    // TODO: priority
+    return Object.keys(this._data.events);
+  }
+
+  removeTodo(item) {
+    this._data.todos.delete(item);
+    this._saveTodos();
+  }
+
+  searchEvents(text) {
+    const results = this._data.sortedEvents.filter(e => {
+      return e.title.toLowerCase().indexOf(text.toLowerCase()) > -1;
+    });
+    return results;
+  }
+
+  _saveTodos() {
+    let todo_array = Array.from(this._data.todos);
     console.log("saving todos");
     AsyncStorage.setItem('todo', JSON.stringify(todo_array))
       .then(resp => {
@@ -97,5 +242,4 @@ export default {
       })
       .done();
   }
-
 }

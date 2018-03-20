@@ -24,7 +24,7 @@ import MoreStack      from './MoreScreen';
 
 import Toast from '../components/Toast';
 
-import dataStore from '../dataStore';
+import DataStore from '../DataStore';
 import globalStyles from '../globalStyles';
 
 let MainNavigator = TabNavigator({
@@ -64,50 +64,16 @@ export default class MainScreen extends React.Component {
   }
 
   componentWillMount() {
-    let msg = "";
+    global.Store = new DataStore(resp => {
+      let msg = resp.msg;
 
-    Promise.all([
-      dataStore.fetchFromStorage(),
-      dataStore.fetchFromNetwork()
-    ]).then(results => {
-      let storageData = results[0];
-      let networkData = results[1];
-      let con_data = {};
-
-      if (storageData && networkData) {
-        // we have both, take whichever is newer
-        if (storageData.updated >= networkData.updated) {
-          msg = "No schedule updates found.";
-          con_data = storageData;
-        } else {
-          msg = "Found schedule updates. Loading...";
-          con_data = networkData;
-          dataStore.saveToStorage(con_data);
-        }
-      } else if (storageData) {
-        // network failure, use stored data
-        con_data = storageData;
-        msg = "No Internet connection. Using stored data from device.";
-      } else if (networkData) {
-        // first time we are running the app, download from network
-        con_data = networkData;
-        msg = "First time using app. Downloading schedule data...";
-        dataStore.saveToStorage(con_data);
-      } else {
-        // first time we are running the app, and we have no connection. Bummer.
-        msg = "First time, no connection";
-      }
-
-      //Alert.alert(msg);
       console.log("msg", msg);
 
       global.makeToast(msg);
-
-      global.con_data = con_data;
       this.setState({
         loaded: true
       });
-    }).done();
+    });
   }
 
   render() {

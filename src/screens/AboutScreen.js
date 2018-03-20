@@ -24,11 +24,8 @@ export default class AboutView extends Component {
 
   render() {
   
-    let aboutText, appText;
-    if (global.con_data && global.con_data.content) {
-      aboutText = global.con_data.content.aboutText;
-      appText   = global.con_data.content.appText;
-    };
+    let aboutText = global.Store.getContent('aboutText');
+    let appText   = global.Store.getContent('appText');
 
     // extra view for padding the bottom. very annoying
     return (

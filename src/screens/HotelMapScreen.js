@@ -81,14 +81,14 @@ export default class HotelMapScreen extends React.Component {
   }
 
   render() {
-    const HOTEL_MAP_WIDTH  = global.con_data.dimensions.HOTEL_MAP_WIDTH;
-    const HOTEL_MAP_HEIGHT = global.con_data.dimensions.HOTEL_MAP_HEIGHT;
+    const HOTEL_MAP_WIDTH  = global.Store.getDimension('HOTEL_MAP_WIDTH');
+    const HOTEL_MAP_HEIGHT = global.Store.getDimension('HOTEL_MAP_HEIGHT');
     
     return (
       <View style={ styles.container } {...this._panResponder.panHandlers}>
         <Image
           style={[ styles.map, { width: HOTEL_MAP_WIDTH, height: HOTEL_MAP_HEIGHT, left: this.state.mapX, top: this.state.mapY } ]}
-          source={{ uri: global.con_data.images.HOTEL_MAP }}
+          source={{ uri: global.Store.getImage('HOTEL_MAP') }}
         />
       </View>
     );

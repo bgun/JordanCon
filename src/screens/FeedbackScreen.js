@@ -25,11 +25,12 @@ export default class FeedbackScreen extends Component {
 
   constructor(props) {
     super();
+    const conName = global.Store.getConName();
     this.state = {
       text: null,
       subject: props.navigation.state.params
-        ? props.navigation.state.params.subject
-        : null
+        ? [conName, props.navigation.state.params.subject].join(' | ')
+        : conName
     }
   }
 
@@ -53,8 +54,9 @@ export default class FeedbackScreen extends Component {
     formData.append("from", "ben@con-nexus.bgun.me");
     formData.append("to", "ben@bengundersen.com");
 
-    let subject = this.state.subject ? [global.con_data.name, this.state.subject].join(' | ') : global.con_data.name
-    formData.append("subject", subject);
+    let conName = global.Store.getConName();
+
+    formData.append("subject", this.state.subject);
     formData.append("text", this.state.text);
 
     fetch(url, {
@@ -76,7 +78,7 @@ export default class FeedbackScreen extends Component {
   }
 
   render() {
-    const subject = this.state.subject || global.con_data.name;
+    const subject = this.state.subject;
     return (
       <ScrollView style={ styles.view }>
         <H2>Feedback for { subject }</H2>

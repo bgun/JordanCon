@@ -27,12 +27,9 @@ export default class EventDetailScreen extends Component {
 
   render() {
     let event_id = this.props.navigation.state.params.event_id;
-    let event = _.find(global.con_data.events, e => e.event_id === event_id);
-    if (!event) {
-      Alert.alert("Event "+event.event_id+" not found!");
-      return null;
-    }
+    let event = global.Store.getEventById(event_id);
     let formatDate = moment(event.day+" "+event.time).format('dddd h:mma');
+
     return (
       <ScrollView style={ styles.view }>
         <H1 style={ globalStyles.h1 }>{ event.title }</H1>

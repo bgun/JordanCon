@@ -32,7 +32,6 @@ import Icon from 'react-native-vector-icons/Entypo';
 
 let window = Dimensions.get('window');
 
-let days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
 
 class ScheduleScreen extends Component {
@@ -57,18 +56,16 @@ class ScheduleScreen extends Component {
     let rowIDs     = [];
     let currentDay = null;
 
-    _.sortBy(global.con_data.events, ["day", "time"]).forEach(e => {
-      let d = moment(e.day+e.time, "YYYY-MM-DDThh:mm:ss");
-      let day = days[d.day()];
-      if (day !== currentDay) {
-        console.log("new day", d, d.day());
-        sectionIDs.push(day);
-        dataBlob[day] = d;
+    global.Store.getAllEvents().forEach(e => {
+      if (e.dayOfWeek !== currentDay) {
+        console.log("new day", dayOfWeek);
+        sectionIDs.push(e.dayOfWeek);
+        dataBlob[dayOfWeek] = e.momentDate;
         rowIDs.push([]);
-        currentDay = day;
+        currentDay = e.dayOfWeek;
       }
       rowIDs[rowIDs.length-1].push(e.event_id);
-      dataBlob[day+':'+e.event_id] = e;
+      dataBlob[e.dayOfWeek+':'+e.event_id] = e;
     });
 
     let ds = new ListView.DataSource({
@@ -87,9 +84,7 @@ class ScheduleScreen extends Component {
 
   handleFilterInput(text) {
     if (text.length > 2) {
-      let filteredEvents = global.con_data.events.filter(e => {
-        return e.title.toLowerCase().indexOf(text.toLowerCase()) > -1;
-      });
+      let filteredEvents = global.Store.searchEvents(text);
       this.setState({
         searchResults: filteredEvents,
         filterText: text
