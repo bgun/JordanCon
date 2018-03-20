@@ -36,7 +36,7 @@ export default class DataStore {
       let con_data = {};
 
       if (!todosData) {
-        todosData = new Set();
+        todosData = [];
       }
 
       if (storageData && networkData) {
@@ -65,18 +65,12 @@ export default class DataStore {
 
       this._data = con_data;
       this._data.guests = _.sortBy(this._data.guests, 'name');
-      this._data.todos = todosData;
+      this._data.todoSet = new Set(todosData);
       let all_events = [];
       Object.keys(this._data.events).forEach(k => {
         all_events = all_events.concat(this._data.events[k]);
       });
-      all_events = _.sortBy(all_events, ["day", "time"]).map(e => {
-        let momentDate = moment(e.day+e.time, "YYYY-MM-DDThh:mm:ss");
-        e.momentDate = momentDate;
-        e.formattedDateTime = momentDate.format('dddd h:mma'); // "Friday 2:30pm"
-        e.dayOfWeek = DAYS_OF_WEEK[momentDate.day()];
-        return e;
-      });
+      all_events = _.sortBy(all_events, ["day", "time"]).map(this._hydrateEvent);
       this._data.sortedEvents = all_events;
 
       cb({
@@ -143,9 +137,17 @@ export default class DataStore {
     });
   }
 
+  // add calculated fields to array of events
+  _hydrateEvent(e) {
+    let momentDate = moment(e.day+e.time, "YYYY-MM-DDThh:mm:ss");
+    e.momentDate = momentDate;
+    e.formattedDateTime = momentDate.format('dddd h:mma'); // "Friday 2:30pm"
+    e.dayOfWeek = DAYS_OF_WEEK[momentDate.day()];
+    return e;
+  }
 
   addTodo(item) {
-    this._data.todos.add(item);
+    this._data.todoSet.add(item);
     this._saveTodos();
   }
 
@@ -168,9 +170,13 @@ export default class DataStore {
   getEventById(event_id) {
     let ev = _.find(this.getAllEvents(), e => (e.event_id === event_id));
     if (!ev) {
-      throw new Error("Event not found!");
+      throw new Error("Event ["+event_id+"] not found!");
     }
     return ev;
+  }
+
+  getEventsByTrack(track) {
+    return this._data.events[track].map(this._hydrateEvent);
   }
 
   getEventsForGuest(guest_id) {
@@ -195,8 +201,9 @@ export default class DataStore {
     return this._data.images[key];
   }
 
-  getTodos() {
-    return this._data.todos;
+  getTodosArray() {
+    return Array.from(this._data.todoSet);
+    /*
     this._fetchTodos()
       .then(todos => {
         let todosArray = Array.from(todos);
@@ -209,15 +216,21 @@ export default class DataStore {
           todoCount: todosArray.length
         });
       }).done();
+    */
   }
 
   getTracks() {
     // TODO: priority
-    return Object.keys(this._data.events);
+    let tracks = Object.keys(this._data.events);
+    return tracks;
+  }
+
+  isTodo(event_id) {
+    return this._data.todoSet.has(event_id);
   }
 
   removeTodo(item) {
-    this._data.todos.delete(item);
+    this._data.todoSet.delete(item);
     this._saveTodos();
   }
 
@@ -229,7 +242,7 @@ export default class DataStore {
   }
 
   _saveTodos() {
-    let todo_array = Array.from(this._data.todos);
+    let todo_array = Array.from(this._data.todoSet);
     console.log("saving todos");
     AsyncStorage.setItem('todo', JSON.stringify(todo_array))
       .then(resp => {

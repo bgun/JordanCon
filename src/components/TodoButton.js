@@ -27,7 +27,7 @@ export default class FeedbackButton extends Component {
   render() {
     return (
       <View>
-        { global.todos.has(this.props.event.event_id) ? (
+        { global.Store.isTodo(this.props.event.event_id) ? (
           <TouchableOpacity style={ styles.buttonRemove } onPress={ () => this.handleRemoveTodo() }>
             <Text style={ styles.buttonText }>Remove from todo list</Text>
           </TouchableOpacity>

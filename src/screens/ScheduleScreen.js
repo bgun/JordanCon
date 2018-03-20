@@ -12,6 +12,7 @@ import {
   Text,
   TextInput,
   TouchableHighlight,
+  TouchableOpacity,
   View
 } from 'react-native';
 
@@ -33,6 +34,16 @@ import Icon from 'react-native-vector-icons/Entypo';
 let window = Dimensions.get('window');
 
 
+class TrackItem extends Component {
+  render() {
+    return (
+      <TouchableOpacity key={ this.props.track } onPress={ () => this.props.handlePress(this.props.track) } style={{ height: 50, width: 200 }}>
+        <Text style={{ fontSize: 16 }}>{ this.props.track }</Text>
+      </TouchableOpacity>
+    );
+  }
+};
+
 
 class ScheduleScreen extends Component {
 
@@ -43,32 +54,15 @@ class ScheduleScreen extends Component {
   constructor(props) {
     super();
 
-    var getSectionData = (dataBlob, sectionID) => {
+    let getSectionData = (dataBlob, sectionID) => {
       return dataBlob[sectionID];
     };
 
-    var getRowData = (dataBlob, sectionID, rowID) => {
+    let getRowData = (dataBlob, sectionID, rowID) => {
       return dataBlob[sectionID+':'+rowID];
     };
 
-    let dataBlob = {};
-    let sectionIDs = [];
-    let rowIDs     = [];
-    let currentDay = null;
-
-    global.Store.getAllEvents().forEach(e => {
-      if (e.dayOfWeek !== currentDay) {
-        console.log("new day", e.dayOfWeek);
-        sectionIDs.push(e.dayOfWeek);
-        dataBlob[e.dayOfWeek] = e.momentDate;
-        rowIDs.push([]);
-        currentDay = e.dayOfWeek;
-      }
-      rowIDs[rowIDs.length-1].push(e.event_id);
-      dataBlob[e.dayOfWeek+':'+e.event_id] = e;
-    });
-
-    let ds = new ListView.DataSource({
+    this.dataSource = new ListView.DataSource({
       getRowData     : getRowData,
       getSectionData : getSectionData,
       rowHasChanged           : (r1, r2) => r1 !== r2,
@@ -76,7 +70,7 @@ class ScheduleScreen extends Component {
     });
 
     this.state = {
-      dataSource: ds.cloneWithRowsAndSections(dataBlob, sectionIDs, rowIDs),
+      currentTrack: global.Store.getTracks()[0],
       modalVisible: false,
       searchResults: []
     };
@@ -98,6 +92,13 @@ class ScheduleScreen extends Component {
     }
   }
 
+  handleTrackChange(track) {
+    this.setState({
+      currentTrack: track,
+      modalVisible: false
+    });
+  }
+
   renderSectionHeader(sectionData, sectionID) {
     return (
       <View style={ styles.section }>
@@ -112,12 +113,37 @@ class ScheduleScreen extends Component {
     return <EventItem navigation={ this.props.navigation } key={ rowData.event_id } event_id={ rowData.event_id } />;
   }
 
+  updateDataSource(events) {
+    let dataBlob = {};
+    let sectionIDs = [];
+    let rowIDs     = [];
+    let currentDay = null;
+  
+    events.forEach(e => {
+      if (e.dayOfWeek !== currentDay) {
+        console.log("new day", e.dayOfWeek);
+        sectionIDs.push(e.dayOfWeek);
+        dataBlob[e.dayOfWeek] = e.momentDate;
+        rowIDs.push([]);
+        currentDay = e.dayOfWeek;
+      }
+      console.log(e.event_id);
+      rowIDs[rowIDs.length-1].push(e.event_id);
+      dataBlob[e.dayOfWeek+':'+e.event_id] = e;
+    });
+
+    return this.dataSource.cloneWithRowsAndSections(dataBlob, sectionIDs, rowIDs)
+  }
+
   render() {
+    let events = global.Store.getEventsByTrack(this.state.currentTrack);
+    let ds = this.updateDataSource(events);
+
     return (
       <View style={{ flex: 1 }}>
         { this.state.searchResults.length ? (
           <View>
-            <View style={[styles.section, { marginTop: 39 }]}><Text style={ styles.sectionText }>SEARCH RESULTS</Text></View>
+            <View style={[styles.section, { marginTop: 80 }]}><Text style={ styles.sectionText }>SEARCH RESULTS</Text></View>
             <ScrollView style={ styles.searchResults }>
               { this.state.searchResults.map(sr => (
                 <EventItem navigation={ this.props.navigation } key={ sr.event_id } event_id={ sr.event_id } />
@@ -127,14 +153,14 @@ class ScheduleScreen extends Component {
         ) : (
           <ListView
             style={ styles.scroll }
-            dataSource={ this.state.dataSource }
+            dataSource={ ds }
             renderRow={ this.renderRow.bind(this) }
             renderSectionHeader={ this.renderSectionHeader }
           />
         ) }
         <View style={ styles.filterContainer }>
           <Icon style={ styles.searchIcon } name="magnifying-glass" size={ 24 } color={ '#00000066' } />
-          <TextInput placeholder="Search for an event" style={ styles.filterInput } value={ this.state.filterText } onChangeText={ this.handleFilterInput.bind(this) } />
+          <TextInput placeholder="Search all events" style={ styles.filterInput } value={ this.state.filterText } onChangeText={ this.handleFilterInput.bind(this) } />
         </View>
         
         <Modal
@@ -142,28 +168,26 @@ class ScheduleScreen extends Component {
           transparent={ true }
           visible={ this.state.modalVisible }>
           <View style={{ backgroundColor: '#FFF', flex: 1, display: 'flex', padding: 20, marginLeft: 20, marginRight: 20, marginTop: 40, marginBottom: 40 }}>
-            <View>
+            <View style={{ borderWidth: 1 }}>
               <TouchableHighlight
                 onPress={ () => {
                   this.setState({ modalVisible: !this.state.modalVisible })
                 }}>
                 <Text>Hide Modal</Text>
               </TouchableHighlight>
-              <ScrollView style={ styles.container }>
-                { global.Store.getTracks().map(track => {
-                  <View><Text>{ track }</Text></View>
-                }) }
+              <ScrollView style={ styles.modal }>
+                { global.Store.getTracks().map(track => <TrackItem track={ track } handlePress={ this.handleTrackChange.bind(this) } /> ) }
               </ScrollView>
             </View>
           </View>
         </Modal>
 
         <TouchableHighlight
-          style={{ position: 'absolute', width: window.width, top: 39, backgroundColor: 'red' }}
+          style={{ position: 'absolute', width: window.width, top: 39, height: 40, backgroundColor: 'red' }}
           onPress={() => {
             this.setState({ modalVisible: true });
           }}>
-          <Text>Show Modal</Text>
+          <Text>Track: { this.state.currentTrack }</Text>
         </TouchableHighlight>
       </View>
     );
@@ -188,6 +212,10 @@ export default StackNavigator({
 
 
 const styles = StyleSheet.create({
+  modal: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
   filterContainer: {
     backgroundColor: 'white',
     borderBottomColor: '#DDDDDD',

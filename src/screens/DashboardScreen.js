@@ -45,7 +45,8 @@ class DashboardScreen extends Component {
   }
 
   render() {
-    let dataSource = this.state.dataSource.cloneWithRows(global.Store.getTodos());
+    let dataSource = this.state.dataSource.cloneWithRows(global.Store.getTodosArray());
+
     return (
       <View style={ styles.container }>
         <ScrollView style={{ flex: 1, flexDirection: 'column' }}>
@@ -57,7 +58,7 @@ class DashboardScreen extends Component {
             style={{ flex: 1, width: window.width }}
             removeClippedSubviews={ false }
             dataSource={ dataSource }
-            renderRow={ rowData => <EventItem key={ rowData.event_id } navigation={ this.props.navigation } event_id={ rowData.event_id } /> }
+            renderRow={ rowData => <EventItem key={ rowData } navigation={ this.props.navigation } event_id={ rowData } /> }
           />
           ) : (
           <View style={ styles.todoEmpty }>

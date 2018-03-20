@@ -21,13 +21,13 @@ export default class EventItem extends Component {
   constructor(props) {
     super();
 
+    console.log("event item", props.event_id);
     let event = global.Store.getEventById(props.event_id);
 
     this.state = {
       event_id: event.event_id,
-      title: event.title,
-      location: event.location,
-      isTodo: global.Store.getTodos().has(event.event_id)
+      event: event,
+      isTodo: global.Store.isTodo(event.event_id)
     };
   }
 
@@ -37,10 +37,10 @@ export default class EventItem extends Component {
     return (
       <TouchableOpacity style={[globalStyles.floatingListItem, styles.item]} onPress={ () => navigate("EventDetail", { navigation: this.props.navigation, event_id: this.state.event_id }) }>
         <View style={{ flex: 1 }}>
-          <Text style={ styles.titleText }>{ this.state.title }</Text>
+          <Text style={ styles.titleText }>{ this.state.event.title }</Text>
           <View style={{ flexDirection: 'row' }}>
-            <Text style={ styles.timeText  }>{ this.state.formattedDateTime }</Text>
-            <Text style={ styles.locationText  }>{ this.state.location }</Text>
+            <Text style={ styles.timeText  }>{ this.state.event.formattedDateTime }</Text>
+            <Text style={ styles.locationText  }>{ this.state.event.location }</Text>
           </View>
         </View>
         { this.state.isTodo ? (
