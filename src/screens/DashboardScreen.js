@@ -20,7 +20,6 @@ import Icon from 'react-native-vector-icons/Entypo';
 
 import _ from 'lodash';
 
-import dataStore from '../dataStore';
 import EventItem from '../components/EventItem';
 
 

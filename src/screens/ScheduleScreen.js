@@ -58,9 +58,9 @@ class ScheduleScreen extends Component {
 
     global.Store.getAllEvents().forEach(e => {
       if (e.dayOfWeek !== currentDay) {
-        console.log("new day", dayOfWeek);
+        console.log("new day", e.dayOfWeek);
         sectionIDs.push(e.dayOfWeek);
-        dataBlob[dayOfWeek] = e.momentDate;
+        dataBlob[e.dayOfWeek] = e.momentDate;
         rowIDs.push([]);
         currentDay = e.dayOfWeek;
       }
@@ -150,10 +150,9 @@ class ScheduleScreen extends Component {
                 <Text>Hide Modal</Text>
               </TouchableHighlight>
               <ScrollView style={ styles.container }>
-                <MenuItem key="directions" link="Directions" text="Address & Directions" icon="pin"    { ...this.props } />
-                <MenuItem key="hotelmap"   link="HotelMap"   text="Hotel Map"            icon="map"    { ...this.props } />
-                <MenuItem key="feedback"   link="Feedback"   text="Feedback"             icon="pencil" { ...this.props } />
-                <MenuItem key="about"      link="About"      text="About"                icon="help"   { ...this.props } />
+                { global.Store.getTracks().map(track => {
+                  <View><Text>{ track }</Text></View>
+                }) }
               </ScrollView>
             </View>
           </View>

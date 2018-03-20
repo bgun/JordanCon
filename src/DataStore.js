@@ -1,7 +1,6 @@
-'use strict';
-
-import React from 'react';
-import _     from 'lodash';
+import _      from 'lodash';
+import moment from 'moment';
+import React  from 'react';
 
 import {
   AsyncStorage
@@ -48,7 +47,7 @@ export default class DataStore {
         } else {
           msg = "Found schedule updates. Loading...";
           con_data = networkData;
-          dataStore.saveToStorage(con_data);
+          this.saveToStorage(con_data);
         }
       } else if (storageData) {
         // network failure, use stored data
@@ -58,7 +57,7 @@ export default class DataStore {
         // first time we are running the app, download from network
         con_data = networkData;
         msg = "First time using app. Downloading schedule data...";
-        dataStore.saveToStorage(con_data);
+        this.saveToStorage(con_data);
       } else {
         // first time we are running the app, and we have no connection. Bummer.
         msg = "First time, no connection";
@@ -74,7 +73,7 @@ export default class DataStore {
       all_events = _.sortBy(all_events, ["day", "time"]).map(e => {
         let momentDate = moment(e.day+e.time, "YYYY-MM-DDThh:mm:ss");
         e.momentDate = momentDate;
-        e.formattedDate = momentDate.format('dddd h:mma'); // "Friday 2:30pm"
+        e.formattedDateTime = momentDate.format('dddd h:mma'); // "Friday 2:30pm"
         e.dayOfWeek = DAYS_OF_WEEK[momentDate.day()];
         return e;
       });
@@ -113,7 +112,7 @@ export default class DataStore {
         })
         .done();
     });
-  },
+  }
 
   saveToStorage(data) {
     return new Promise((resolve, reject) => {
@@ -175,7 +174,7 @@ export default class DataStore {
   }
 
   getEventsForGuest(guest_id) {
-    return this._data.events
+    return this._data.sortedEvents
       .filter(e => _.includes(e.guest_list, guest_id))
       .map(e => e.event_id);
   }

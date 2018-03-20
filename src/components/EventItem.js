@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 
 import _      from 'lodash';
-import moment from 'moment';
 
 import Icon from 'react-native-vector-icons/Entypo';
 
@@ -28,7 +27,6 @@ export default class EventItem extends Component {
       event_id: event.event_id,
       title: event.title,
       location: event.location,
-      datetime: moment(event.day+" "+event.time).format('dddd h:mma'),
       isTodo: global.Store.getTodos().has(event.event_id)
     };
   }
@@ -41,7 +39,7 @@ export default class EventItem extends Component {
         <View style={{ flex: 1 }}>
           <Text style={ styles.titleText }>{ this.state.title }</Text>
           <View style={{ flexDirection: 'row' }}>
-            <Text style={ styles.timeText  }>{ this.state.datetime }</Text>
+            <Text style={ styles.timeText  }>{ this.state.formattedDateTime }</Text>
             <Text style={ styles.locationText  }>{ this.state.location }</Text>
           </View>
         </View>

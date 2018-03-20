@@ -2,7 +2,7 @@
 ; We fork some components by platform
 .*/*[.]android.js
 
-; Ignore RN jest
+[untyped]
 <PROJECT_ROOT>/node_modules/.*
 
 [include]

@@ -9,8 +9,6 @@ import {
 
 import Icon from 'react-native-vector-icons/Entypo';
 
-import dataStore from '../dataStore';
-
 import globalStyles from '../globalStyles';
 
 
