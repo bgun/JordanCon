@@ -77,14 +77,8 @@ export default class GuestDetailScreen extends Component {
 
   render() {
     let guest_id = this.props.navigation.state.params.guest_id;
-    let guest = _.find(global.con_data.guests, g => g.guest_id === guest_id);
-    if (!guest) {
-      Alert.alert("Guest "+guest.guest_id+" not found!");
-      return null;
-    }
-    guest.event_list = global.con_data.events
-      .filter(e => _.includes(e.guest_list, guest.guest_id))
-      .map(e => e.event_id);
+    let guest = global.Store.getGuestById(guest_id);
+    guest.event_list = global.Store.getEventsForGuest(guest_id);
 
     return (
       <ScrollView style={ styles.view }>

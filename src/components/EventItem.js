@@ -22,17 +22,14 @@ export default class EventItem extends Component {
   constructor(props) {
     super();
 
-    let event = _.find(global.con_data.events, e => (e.event_id === props.event_id));
-    if (!event) {
-      throw new Error("Event not found!");
-    }
+    let event = global.Store.getEventById(props.event_id);
 
     this.state = {
       event_id: event.event_id,
       title: event.title,
       location: event.location,
       datetime: moment(event.day+" "+event.time).format('dddd h:mma'),
-      isTodo: global.todos.has(event.event_id)
+      isTodo: global.Store.getTodos().has(event.event_id)
     };
   }
 
