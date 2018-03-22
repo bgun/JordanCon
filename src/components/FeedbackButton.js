@@ -27,7 +27,7 @@ export default class FeedbackButton extends Component {
 const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
-    backgroundColor: '#779',
+    backgroundColor: globalStyles.COLORS.feedbackBtn,
     borderRadius: 10,
     marginTop: 10,
     paddingHorizontal: 20,

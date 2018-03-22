@@ -44,6 +44,17 @@ class DashboardScreen extends Component {
     };
   }
 
+  componentWillMount() {
+    this._sub = this.props.navigation.addListener('didFocus', () => {
+      console.log("focus");
+      this.forceUpdate();
+    });
+  }
+
+  componentWillUnmount() {
+    this._sub.remove();
+  }
+
   render() {
     let dataSource = this.state.dataSource.cloneWithRows(global.Store.getTodosArray());
 

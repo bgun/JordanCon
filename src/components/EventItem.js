@@ -21,17 +21,22 @@ export default class EventItem extends Component {
   constructor(props) {
     super();
 
-    console.log("event item", props.event_id);
     let event = global.Store.getEventById(props.event_id);
-
-    this.state = {
+    
+    this.state = event ? {
       event_id: event.event_id,
       event: event,
       isTodo: global.Store.isTodo(event.event_id)
-    };
+    } : {};
   }
 
   render() {
+    // This may happen if an event is in your todos and gets deleted.
+    if (!this.state.event) {
+      console.warn("Event not found!", this.props.event_id);
+      return null;
+    }
+
     const { navigate } = this.props.navigation;
 
     return (

@@ -70,7 +70,7 @@ class ScheduleScreen extends Component {
     });
 
     this.state = {
-      currentTrack: global.Store.getTracks()[0],
+      currentTrack: global.Store.getTrackNames()[0],
       modalVisible: false,
       searchResults: []
     };
@@ -83,7 +83,6 @@ class ScheduleScreen extends Component {
         searchResults: filteredEvents,
         filterText: text
       });
-      console.log("Displaying events", filteredEvents);
     } else {
       this.setState({
         searchResults: [],
@@ -127,7 +126,6 @@ class ScheduleScreen extends Component {
         rowIDs.push([]);
         currentDay = e.dayOfWeek;
       }
-      console.log(e.event_id);
       rowIDs[rowIDs.length-1].push(e.event_id);
       dataBlob[e.dayOfWeek+':'+e.event_id] = e;
     });
@@ -176,7 +174,7 @@ class ScheduleScreen extends Component {
                 <Text>Hide Modal</Text>
               </TouchableHighlight>
               <ScrollView style={ styles.modal }>
-                { global.Store.getTracks().map(track => <TrackItem track={ track } handlePress={ this.handleTrackChange.bind(this) } /> ) }
+                { global.Store.getTrackNames().map(track => <TrackItem track={ track } handlePress={ this.handleTrackChange.bind(this) } /> ) }
               </ScrollView>
             </View>
           </View>

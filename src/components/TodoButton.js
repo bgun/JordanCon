@@ -20,7 +20,7 @@ export default class FeedbackButton extends Component {
   }
 
   handleRemoveTodo() {
-    globalStore.removeTodo(this.props.event.event_id);
+    global.Store.removeTodo(this.props.event.event_id);
     this.forceUpdate();
   }
 

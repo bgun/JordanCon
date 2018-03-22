@@ -2,13 +2,15 @@
 
 let _borderColor = '#DDDDDD';
 
+// 1C8BAD
+
 export default {
   COLORS: {
     border: '#DDD',
     headerBg: '#4270a9',
-    highlight: '#2cb571',
-    highlightDark: '#0c8551',
-    menuBg: '#2b3e62'
+    highlight: '#1C8BAD',
+    highlightDark: '#0e5166',
+    feedbackBtn: '#678'
   },
   floatingList: {
     backgroundColor: '#FFFFFF',

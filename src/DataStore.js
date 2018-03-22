@@ -67,8 +67,8 @@ export default class DataStore {
       this._data.guests = _.sortBy(this._data.guests, 'name');
       this._data.todoSet = new Set(todosData);
       let all_events = [];
-      Object.keys(this._data.events).forEach(k => {
-        all_events = all_events.concat(this._data.events[k]);
+      Object.keys(this._data.tracks).forEach(k => {
+        all_events = all_events.concat(this._data.tracks[k].events || []);
       });
       all_events = _.sortBy(all_events, ["day", "time"]).map(this._hydrateEvent);
       this._data.sortedEvents = all_events;
@@ -170,18 +170,26 @@ export default class DataStore {
   getEventById(event_id) {
     let ev = _.find(this.getAllEvents(), e => (e.event_id === event_id));
     if (!ev) {
-      throw new Error("Event ["+event_id+"] not found!");
+      console.warn("Event ["+event_id+"] not found!");
+      return null;
     }
     return ev;
   }
 
-  getEventsByTrack(track) {
-    return this._data.events[track].map(this._hydrateEvent);
+  getEventsByTrack(trackName) {
+    let track = _.find(this._data.tracks, tr => trackName === tr.name);
+    let events = [];
+    if (track && track.events) {
+       events = _.sortBy(track.events, ["day", "time"]).map(this._hydrateEvent);
+    } else {
+      console.warn("Empty track!", trackName);
+    }
+    return events;
   }
 
   getEventsForGuest(guest_id) {
     return this._data.sortedEvents
-      .filter(e => _.includes(e.guest_list, guest_id))
+      .filter(e => _.includes(e.guests, guest_id))
       .map(e => e.event_id);
   }
 
@@ -219,10 +227,8 @@ export default class DataStore {
     */
   }
 
-  getTracks() {
-    // TODO: priority
-    let tracks = Object.keys(this._data.events);
-    return tracks;
+  getTrackNames() {
+    return _.sortBy(this._data.tracks.map(ev => ev.name));
   }
 
   isTodo(event_id) {
