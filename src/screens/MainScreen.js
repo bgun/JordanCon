@@ -94,7 +94,7 @@ export default class MainScreen extends React.Component {
 
 let styles = StyleSheet.create({
   mainView: {
-    backgroundColor: 'gray',
+    backgroundColor: '#AAA',
     flex: 1,
     shadowColor: "#000000",
     shadowOpacity: 0.5,

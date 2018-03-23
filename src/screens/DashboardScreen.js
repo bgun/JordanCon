@@ -45,14 +45,13 @@ class DashboardScreen extends Component {
   }
 
   componentWillMount() {
-    this._sub = this.props.navigation.addListener('didFocus', () => {
-      console.log("focus");
+    this._focusSub = this.props.navigation.addListener('didFocus', () => {
       this.forceUpdate();
     });
   }
 
   componentWillUnmount() {
-    this._sub.remove();
+    this._focusSub.remove();
   }
 
   render() {

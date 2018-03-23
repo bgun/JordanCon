@@ -10,6 +10,7 @@ export default {
     headerBg: '#4270a9',
     highlight: '#1C8BAD',
     highlightDark: '#0e5166',
+    highlightAlt: '#C83',
     feedbackBtn: '#678'
   },
   floatingList: {

@@ -159,6 +159,16 @@ export default class DataStore {
     return this._data.content[key];
   }
 
+  getVenueInfo() {
+    let v = this._data.venue;
+    return {
+      name: v.name,
+      address: v.address || [],
+      phone: v.phone,
+      maps_url: v.maps_url
+    }
+  }
+
   getConName() {
     return this._data.name;
   }

@@ -10,8 +10,11 @@ import {
   PanResponder,
   StyleSheet,
   Text,
+  TouchableHighlight,
   View
 } from 'react-native';
+
+import Icon from 'react-native-vector-icons/Entypo';
 
 import globalStyles from '../globalStyles';
 
@@ -27,9 +30,31 @@ export default class HotelMapScreen extends React.Component {
   constructor() {
     super();
     this.state = {
-      mapX: -200,
-      mapY: -30
+      scale: 1,
+      mapX: -global.Store.getDimension('HOTEL_MAP_WIDTH') / 4,
+      mapY: -global.Store.getDimension('HOTEL_MAP_HEIGHT') / 4
     }
+  }
+
+  onMapZoomIn() {
+    let newScale = this.scale * 1.2;
+    if (newScale > 2) {
+      newScale = 2;
+    }
+    this.setState({
+      scale: newScale
+    });
+  }
+
+  onMapZoomOut() {
+    console.log("out");
+    let newScale = this.scale * 0.8;
+    if (newScale < 0.5) {
+      newScale = 0.5;
+    }
+    this.setState({
+      scale: newScale
+    });
   }
 
   componentWillMount() {
@@ -38,8 +63,8 @@ export default class HotelMapScreen extends React.Component {
 
     this._panResponder = PanResponder.create({
       // Ask to be the responder:
-      onStartShouldSetPanResponder: (evt, gestureState) => true,
-      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
+      onStartShouldSetPanResponder: (evt, gestureState) => false,
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
       onMoveShouldSetPanResponder: (evt, gestureState) => true,
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
 
@@ -51,7 +76,6 @@ export default class HotelMapScreen extends React.Component {
       },
       onPanResponderMove: (evt, gestureState) => {
         // The most recent move distance is gestureState.move{X,Y}
-        console.log(gestureState);
         this.setState({
           mapX: this._lastLeft + gestureState.dx,
           mapY: this._lastTop  + gestureState.dy
@@ -83,13 +107,20 @@ export default class HotelMapScreen extends React.Component {
   render() {
     const HOTEL_MAP_WIDTH  = global.Store.getDimension('HOTEL_MAP_WIDTH');
     const HOTEL_MAP_HEIGHT = global.Store.getDimension('HOTEL_MAP_HEIGHT');
+    const scale = this.state.scale;
     
     return (
       <View style={ styles.container } {...this._panResponder.panHandlers}>
         <Image
-          style={[ styles.map, { width: HOTEL_MAP_WIDTH, height: HOTEL_MAP_HEIGHT, left: this.state.mapX, top: this.state.mapY } ]}
+          style={[ styles.map, { width: HOTEL_MAP_WIDTH * scale, height: HOTEL_MAP_HEIGHT * scale, left: this.state.mapX, top: this.state.mapY } ]}
           source={{ uri: global.Store.getImage('HOTEL_MAP') }}
         />
+        <TouchableHighlight onPress={ this.onMapZoomIn.bind(this) } style={[ styles.zoomButton, { bottom: 74 } ]}>
+          <Icon name="squared-plus" size={ 54 } color="#666" />
+        </TouchableHighlight>
+        <TouchableHighlight onPress={ this.onMapZoomOut.bind(this) } style={[ styles.zoomButton, { bottom: 20 } ]}>
+          <Icon name="squared-minus" size={ 54 } color="#666" />
+        </TouchableHighlight>
       </View>
     );
   }
@@ -102,8 +133,14 @@ var styles = StyleSheet.create({
     flex: 1
   },
   map: {
+    backgroundColor: '#FFF',
     borderColor: globalStyles.COLORS.border,
     borderWidth: 5,
     position: 'absolute'
+  },
+  zoomButton: {
+    display: 'none',
+    position: 'absolute',
+      right: 10
   }
 });

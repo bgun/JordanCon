@@ -68,11 +68,11 @@ const styles = StyleSheet.create({
   },
   timeText: {
     color: '#666666',
-    fontSize: 15
+    fontSize: 16
   },
   locationText: {
-    color: '#77F',
-    fontSize: 15,
+    color: globalStyles.COLORS.highlightAlt,
+    fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 10
   }

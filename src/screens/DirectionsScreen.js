@@ -28,6 +28,9 @@ export default class DirectionsView extends Component {
   render() {
     const { navigate } = this.props.navigation;
 
+    let venue = global.Store.getVenueInfo();
+    let phoneUrl = 'tel://'+venue.phone.replace(/[\W]/g, '');
+
     return (
       <ScrollView style={ styles.view }>
         <View style={{ marginHorizontal: 10 }}>
@@ -41,15 +44,16 @@ export default class DirectionsView extends Component {
           <H3>Hotel Info</H3>
         </View>
         <View style={ styles.btn }>
-          <ExternalLink url="https://www.google.com/maps/place/Holiday+Inn+Roanoke-Tanglewood-Rt+419%26i581/@37.2252603,-79.986239,17z">
-            <Text style={[ styles.address, { fontWeight: 'bold' }]}>Holiday Inn – Tanglewood</Text>
-            <Text style={ styles.address }>4468 Starkey Road, SW</Text>
-            <Text style={ styles.address }>Roanoke, VA 24018</Text>
+          <ExternalLink url={ venue.maps_url }>
+            <Text style={[ styles.address, { fontWeight: 'bold' }]}>{ venue.name }</Text>
+            { venue.address.map(line => (
+              <Text style={ styles.address }>{ line }</Text>
+            )) }
           </ExternalLink>
         </View>
         <View style={ styles.btn }>
-          <ExternalLink url="tel://5407744400">
-            <Text style={ styles.phone }>540-774-4400</Text>
+          <ExternalLink url={ phoneUrl }>
+            <Text style={ styles.phone }>{ venue.phone }</Text>
           </ExternalLink>
         </View>
       </ScrollView>

@@ -11,7 +11,6 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableHighlight,
   TouchableOpacity,
   View
 } from 'react-native';
@@ -37,12 +36,33 @@ let window = Dimensions.get('window');
 class TrackItem extends Component {
   render() {
     return (
-      <TouchableOpacity key={ this.props.track } onPress={ () => this.props.handlePress(this.props.track) } style={{ height: 50, width: 200 }}>
+      <TouchableOpacity key={ this.props.track } onPress={ () => this.props.onPress(this.props.track) } style={ styles.modalTrackItem }>
         <Text style={{ fontSize: 16 }}>{ this.props.track }</Text>
       </TouchableOpacity>
     );
   }
 };
+
+
+class TrackModal extends Component {
+  render() {
+    return (
+      <Modal animationType="fade" transparent={ true } visible={ this.props.isVisible }>
+        <View style={ styles.modalContainer }>
+          <View style={ styles.modalBody }>
+            <ScrollView>
+              <View style={ styles.modalTitle }><Text style={{ color: '#333', fontWeight: 'bold' }}>Choose a track to view:</Text></View>
+              <TouchableOpacity onPress={ this.props.onCancel } style={ styles.modalCancelBtn }>
+                <Text style={{ color: '#E00' }}>Cancel</Text>
+              </TouchableOpacity>
+              { global.Store.getTrackNames().map(track => <TrackItem track={ track } onPress={ this.props.onTrackChange } /> ) }
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+    );
+  }
+}
 
 
 class ScheduleScreen extends Component {
@@ -91,7 +111,13 @@ class ScheduleScreen extends Component {
     }
   }
 
-  handleTrackChange(track) {
+  onModalCancel() {
+    this.setState({
+      modalVisible: false
+    });
+  }
+
+  onTrackChange(track) {
     this.setState({
       currentTrack: track,
       modalVisible: false
@@ -120,7 +146,6 @@ class ScheduleScreen extends Component {
   
     events.forEach(e => {
       if (e.dayOfWeek !== currentDay) {
-        console.log("new day", e.dayOfWeek);
         sectionIDs.push(e.dayOfWeek);
         dataBlob[e.dayOfWeek] = e.momentDate;
         rowIDs.push([]);
@@ -149,44 +174,28 @@ class ScheduleScreen extends Component {
             </ScrollView>
           </View>
         ) : (
-          <ListView
-            style={ styles.scroll }
-            dataSource={ ds }
-            renderRow={ this.renderRow.bind(this) }
-            renderSectionHeader={ this.renderSectionHeader }
-          />
+          <View style={{ flex: 1 }}>
+            <TouchableOpacity style={ styles.showTrackModalBtn }
+              onPress={() => {
+                this.setState({ modalVisible: true });
+              }}>
+              <Text style={{ fontSize: 15, fontWeight: "bold" }}>{ this.state.currentTrack }</Text>
+              <Icon size={ 18 } color={ '#000000AA' } name="chevron-down" style={{ marginLeft: 6 }} />
+            </TouchableOpacity>
+            <ListView
+              style={ styles.scroll }
+              dataSource={ ds }
+              renderRow={ this.renderRow.bind(this) }
+              renderSectionHeader={ this.renderSectionHeader }
+            />
+          </View>
         ) }
         <View style={ styles.filterContainer }>
           <Icon style={ styles.searchIcon } name="magnifying-glass" size={ 24 } color={ '#00000066' } />
           <TextInput placeholder="Search all events" style={ styles.filterInput } value={ this.state.filterText } onChangeText={ this.handleFilterInput.bind(this) } />
         </View>
-        
-        <Modal
-          animationType="fade"
-          transparent={ true }
-          visible={ this.state.modalVisible }>
-          <View style={{ backgroundColor: '#FFF', flex: 1, display: 'flex', padding: 20, marginLeft: 20, marginRight: 20, marginTop: 40, marginBottom: 40 }}>
-            <View style={{ borderWidth: 1 }}>
-              <TouchableHighlight
-                onPress={ () => {
-                  this.setState({ modalVisible: !this.state.modalVisible })
-                }}>
-                <Text>Hide Modal</Text>
-              </TouchableHighlight>
-              <ScrollView style={ styles.modal }>
-                { global.Store.getTrackNames().map(track => <TrackItem track={ track } handlePress={ this.handleTrackChange.bind(this) } /> ) }
-              </ScrollView>
-            </View>
-          </View>
-        </Modal>
-
-        <TouchableHighlight
-          style={{ position: 'absolute', width: window.width, top: 39, height: 40, backgroundColor: 'red' }}
-          onPress={() => {
-            this.setState({ modalVisible: true });
-          }}>
-          <Text>Track: { this.state.currentTrack }</Text>
-        </TouchableHighlight>
+ 
+        <TrackModal isVisible={ this.state.modalVisible } onCancel={ this.onModalCancel.bind(this) } onTrackChange={ this.onTrackChange.bind(this) } />
       </View>
     );
   }
@@ -210,10 +219,6 @@ export default StackNavigator({
 
 
 const styles = StyleSheet.create({
-  modal: {
-    display: 'flex',
-    flexDirection: 'column'
-  },
   filterContainer: {
     backgroundColor: 'white',
     borderBottomColor: '#DDDDDD',
@@ -230,10 +235,50 @@ const styles = StyleSheet.create({
     height: 40,
     paddingLeft: 30
   },
+  modal: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  modalBody: {
+    backgroundColor: '#FFF',
+    borderRadius: 5,
+    marginTop: 40,
+    marginBottom: 40,
+    padding: 10
+  },
+  modalContainer: {
+    backgroundColor: '#DDDDDDCC',
+    display: 'flex',
+    flex: 1,
+    padding: 20
+  },
+  modalCancelBtn: {
+    alignItems: 'center',
+    display: 'flex',
+    justifyContent: 'center',
+    height: 50
+  },
+  modalTitle: {
+    alignItems: 'center',
+    borderRadius: 3,
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: 5,
+    height: 50
+  },
+  modalTrackItem: {
+    alignItems: 'center',
+    backgroundColor: '#EEE',
+    borderRadius: 3,
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: 5,
+    height: 50
+  },
   scroll: {
     backgroundColor: '#FFFFFF',
     flex: 1,
-    marginTop: 80
+    marginTop: 90
   },
   searchIcon: {
     position: 'absolute',
@@ -242,15 +287,16 @@ const styles = StyleSheet.create({
   },
   searchResults: {
     backgroundColor: '#F8F8F8',
+    flex: 1,
     height: window.height - 40,
-    marginTop: 39,
+    marginTop: 40,
     position: 'absolute',
       left: 0,
     width: window.width
   },
   searchResultsHeader: {
     backgroundColor: globalStyles.COLORS.highlight,
-    marginTop: 39,
+    marginTop: 40,
     paddingHorizontal: 10,
     paddingVertical: 15
   },
@@ -267,5 +313,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     opacity: 0.85
+  },
+  showTrackModalBtn: {
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    borderRadius: 5,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    margin: 5,
+    position: 'absolute',
+      top: 40,
+      height: 40,
+    width: window.width - 10
   }
 });

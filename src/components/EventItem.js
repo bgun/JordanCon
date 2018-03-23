@@ -60,6 +60,7 @@ export default class EventItem extends Component {
 const styles = StyleSheet.create({
   item: {
     backgroundColor: 'white',
+    borderRadius: 5,
     flex: 1,
     flexDirection: 'row',
     paddingHorizontal: 10,
@@ -73,7 +74,7 @@ const styles = StyleSheet.create({
     fontSize: 13
   },
   locationText: {
-    color: '#77F',
+    color: globalStyles.COLORS.highlightAlt,
     fontSize: 13,
     marginLeft: 13
   }
