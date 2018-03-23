@@ -13,10 +13,11 @@
       "hideExponentText": true
     },
     "ios": {
-      "bundleIdentifier": "org.jordancon"
+      "bundleIdentifier": "org.jordancon.iosapp",
+      "supportsTablet": true
     },
     "android": {
-      "package": "org.jordancon",
+      "package": "org.jordancon.android",
       "permissions": [],
       "versionCode": 3
     }
