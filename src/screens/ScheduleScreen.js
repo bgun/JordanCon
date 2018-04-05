@@ -90,7 +90,7 @@ class ScheduleScreen extends Component {
     });
 
     this.state = {
-      currentTrack: global.Store.getTrackNames()[0],
+      currentTrack: global.Store.getDefaultTrack(),
       modalVisible: false,
       searchResults: []
     };

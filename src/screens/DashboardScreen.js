@@ -25,6 +25,11 @@ import EventItem from '../components/EventItem';
 
 let window = Dimensions.get('window');
 
+let getHeroHeight = function() {
+  console.log(window);
+  return window.width * 0.9;
+}
+
 
 class DashboardScreen extends Component {
 
@@ -60,7 +65,7 @@ class DashboardScreen extends Component {
     return (
       <View style={ styles.container }>
         <ScrollView style={{ flex: 1, flexDirection: 'column' }}>
-          <Image style={{ height: window.width, width: window.width }} source={{ uri: global.Store.getImage('DASHBOARD') }} />
+          <Image style={{ height: getHeroHeight(), width: window.width }} source={{ uri: global.Store.getImage('DASHBOARD') }} />
           <Text style={ styles.todoTitleText }>MY TO-DO LIST</Text>
           { this.state.todoCount > 0 ? (
           <ListView

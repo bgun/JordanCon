@@ -175,6 +175,10 @@ export default class DataStore {
     return this._data.name;
   }
 
+  getDefaultTrack() {
+    return this._data.tracks.filter(tr => !!tr.default)[0].name || "";
+  }
+
   getDimension(key) {
     return this._data.dimensions[key];
   }
