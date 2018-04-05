@@ -19,7 +19,7 @@
     "android": {
       "package": "org.jordancon.android",
       "permissions": [],
-      "versionCode": 3
+      "versionCode": 40002
     }
   }
 }

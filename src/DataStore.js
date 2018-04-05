@@ -137,7 +137,8 @@ export default class DataStore {
     });
   }
 
-  // add calculated fields to array of events
+  // Add calculated fields an event.
+  // Remember to keep this idempotent.
   _hydrateEvent(e) {
     let momentDate = moment(e.day+e.time, "YYYY-MM-DDThh:mm:ss");
     e.momentDate = momentDate;
@@ -152,6 +153,7 @@ export default class DataStore {
   }
 
   getAllEvents() {
+    // already hydrated
     return this._data.sortedEvents;
   }
 
@@ -220,21 +222,10 @@ export default class DataStore {
   }
 
   getTodosArray() {
-    return Array.from(this._data.todoSet);
-    /*
-    this._fetchTodos()
-      .then(todos => {
-        let todosArray = Array.from(todos);
-        todosArray = _(todosArray).map(todo => {
-          return _.find(global.con_data.events, e => e.event_id === todo);
-        }).filter(todo => !!todo).sortBy(["day", "time"]).value();
-
-        this.setState({
-          dataSource: this.state.dataSource.cloneWithRows(todosArray),
-          todoCount: todosArray.length
-        });
-      }).done();
-    */
+    let todos = Array.from(this._data.todoSet);
+    todos = todos.map(this.getEventById.bind(this)).filter(t => !!t);
+    todos = _.sortBy(todos, ["day", "time"]);
+    return todos;
   }
 
   getTrackNames() {

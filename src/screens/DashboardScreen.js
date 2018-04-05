@@ -60,7 +60,7 @@ class DashboardScreen extends Component {
     return (
       <View style={ styles.container }>
         <ScrollView style={{ flex: 1, flexDirection: 'column' }}>
-          <Image style={{ height: 333, width: window.width }} source={{ uri: global.Store.getImage('DASHBOARD') }} />
+          <Image style={{ height: window.width, width: window.width }} source={{ uri: global.Store.getImage('DASHBOARD') }} />
           <Text style={ styles.todoTitleText }>MY TO-DO LIST</Text>
           { this.state.todoCount > 0 ? (
           <ListView
@@ -68,7 +68,7 @@ class DashboardScreen extends Component {
             style={{ flex: 1, width: window.width }}
             removeClippedSubviews={ false }
             dataSource={ dataSource }
-            renderRow={ rowData => <EventItem key={ rowData } navigation={ this.props.navigation } event_id={ rowData } /> }
+            renderRow={ rowData => <EventItem key={ rowData.event_id } navigation={ this.props.navigation } event_id={ rowData.event_id } /> }
           />
           ) : (
           <View style={ styles.todoEmpty }>
