@@ -47,12 +47,21 @@ let MainNavigator = TabNavigator({
 }, {
   tabBarPosition: 'bottom',
   tabBarOptions: {
+    style: {
+      height: 50
+    },
     labelStyle: {
+      paddingLeft: 0,
+      marginLeft: 0,
+      marginRight: 0
     },
     tabStyle: {
+      flexDirection: 'column',
+      justifyContent: 'space-around',
+      paddingTop: 10,
       paddingLeft: 0,
       paddingRight: 0
-    }
+    } 
   }
 });
 

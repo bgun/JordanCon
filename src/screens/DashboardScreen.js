@@ -26,7 +26,6 @@ import EventItem from '../components/EventItem';
 let window = Dimensions.get('window');
 
 let getHeroHeight = function() {
-  console.log(window);
   return window.width * 0.9;
 }
 
