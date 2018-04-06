@@ -18,6 +18,8 @@ import globalStyles from '../globalStyles';
 import GuestItem from '../components/GuestItem';
 import { H1, H2, H3, H4 } from '../components/Headings';
 
+import SECRETS from '../../SECRETS.json';
+
 
 export default class FeedbackScreen extends Component {
 
@@ -40,7 +42,7 @@ export default class FeedbackScreen extends Component {
 
   handlePress() {
 
-    const MAILGUN_API_KEY = 'key-67e2b1cb3dedfd3e88f10c6293af177a';
+    const MAILGUN_API_KEY = SECRETS.MAILGUN_API_KEY;
     const domain = 'con-nexus.bgun.me';
     
     // let url = 'http://con-nexus.bgun.me/api/feedback';

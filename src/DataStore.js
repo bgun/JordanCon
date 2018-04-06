@@ -11,6 +11,13 @@ import packageJson from '../package.json';
 
 const DAYS_OF_WEEK = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
+const DEFAULT_VENUE = {
+  name: "",
+  address: [],
+  phone: "",
+  maps_url: ""
+};
+
 let fetchOptions = {
   headers: {
     'Accept': 'application/json',
@@ -162,13 +169,7 @@ export default class DataStore {
   }
 
   getVenueInfo() {
-    let v = this._data.venue;
-    return {
-      name: v.name,
-      address: v.address || [],
-      phone: v.phone,
-      maps_url: v.maps_url
-    }
+    return Object.assign({}, DEFAULT_VENUE, this._data.venue);
   }
 
   getConName() {
