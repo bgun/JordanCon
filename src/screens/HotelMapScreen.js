@@ -8,6 +8,7 @@ import {
   Image,
   MapView,
   PanResponder,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableHighlight,
@@ -110,18 +111,16 @@ export default class HotelMapScreen extends React.Component {
     const scale = this.state.scale;
     
     return (
-      <View style={ styles.container } {...this._panResponder.panHandlers}>
+      <ScrollView style={ styles.container }
+        {...this._panResponder.panHandlers}
+        maximumZoomScale={ 2 }
+        bounces={ false }
+      >
         <Image
           style={[ styles.map, { width: HOTEL_MAP_WIDTH * scale, height: HOTEL_MAP_HEIGHT * scale, left: this.state.mapX, top: this.state.mapY } ]}
           source={{ uri: global.Store.getImage('HOTEL_MAP') }}
         />
-        <TouchableHighlight onPress={ this.onMapZoomIn.bind(this) } style={[ styles.zoomButton, { bottom: 74 } ]}>
-          <Icon name="squared-plus" size={ 54 } color="#666" />
-        </TouchableHighlight>
-        <TouchableHighlight onPress={ this.onMapZoomOut.bind(this) } style={[ styles.zoomButton, { bottom: 20 } ]}>
-          <Icon name="squared-minus" size={ 54 } color="#666" />
-        </TouchableHighlight>
-      </View>
+      </ScrollView>
     );
   }
 
@@ -134,7 +133,7 @@ var styles = StyleSheet.create({
   },
   map: {
     backgroundColor: '#FFF',
-    borderColor: globalStyles.COLORS.border,
+    borderColor: '#DDD',
     borderWidth: 5,
     position: 'absolute'
   },
