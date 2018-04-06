@@ -20,7 +20,10 @@ import Icon from 'react-native-vector-icons/Entypo';
 
 import _ from 'lodash';
 
+import CustomEventScreen from './CustomEventScreen';
 import EventItem from '../components/EventItem';
+
+import globalStyles from '../globalStyles';
 
 
 let window = Dimensions.get('window');
@@ -43,8 +46,7 @@ class DashboardScreen extends Component {
   constructor(props) {
     super();
     this.state = {
-      dataSource: new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }),
-      todoCount: 999
+      dataSource: new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
     };
   }
 
@@ -66,7 +68,7 @@ class DashboardScreen extends Component {
         <ScrollView style={{ flex: 1, flexDirection: 'column' }}>
           <Image style={{ height: getHeroHeight(), width: window.width }} source={{ uri: global.Store.getImage('DASHBOARD') }} />
           <Text style={ styles.todoTitleText }>MY TO-DO LIST</Text>
-          { this.state.todoCount > 0 ? (
+          { global.Store.getTodosArray().length > 0 ? (
           <ListView
             tabLabel="My Todo List"
             style={{ flex: 1, width: window.width }}
@@ -79,6 +81,9 @@ class DashboardScreen extends Component {
             <Text style={ styles.todoEmptyText }>Your to-do list is empty. Select events from the Schedule to add them here.</Text>
           </View>
           ) }
+          <TouchableOpacity style={ [styles.customEventButton, { backgroundColor: global.Store.getColor('highlightAlt') }] } onPress={ () => { this.props.navigation.navigate("CustomEvent", { subject: this.props.subject }) } }>
+            <Text style={ styles.customEventButtonText }>Add Custom To-Do</Text>
+          </TouchableOpacity>
         </ScrollView>
       </View>
     );
@@ -87,7 +92,8 @@ class DashboardScreen extends Component {
 }
 
 export default StackNavigator({
-  Dashboard : { screen: DashboardScreen }
+  "Dashboard"   : { screen: DashboardScreen },
+  "CustomEvent" : { screen: CustomEventScreen }
 });
 
 const styles = StyleSheet.create({
@@ -98,11 +104,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   todoTitleText: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#F00',
     color: '#778',
     fontSize: 12,
     fontWeight: 'bold',
-    marginHorizontal: 10,
-    marginVertical: 6
+    paddingHorizontal: 10,
+    paddingVertical: 6
   },
   todoEmpty: {
     backgroundColor: 'white',
@@ -117,5 +125,15 @@ const styles = StyleSheet.create({
   todoEmptyText: {
     color: '#777',
     textAlign: 'center'
+  },
+  customEventButton: {
+    alignItems: 'center',
+    borderRadius: 10,
+    height: 35,
+    justifyContent: 'center',
+    margin: 10
+  },
+  customEventButtonText: {
+    color: 'white'
   }
 });

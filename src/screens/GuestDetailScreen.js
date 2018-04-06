@@ -50,7 +50,7 @@ class ExpandableText extends React.Component {
               <HtmlView value={ this.props.text.substr(0, this.props.max)+"..." } />
             ) }
             <TouchableOpacity onPress={ this.toggleMore.bind(this) }>
-              <Text style={ this.props.btnStyle }>{ this.state.btnText }</Text>
+              <Text style={ [this.props.btnStyle, { color: global.Store.getColor('highlight') }] }>{ this.state.btnText }</Text>
             </TouchableOpacity>
           </View>
         ) : (
@@ -63,7 +63,6 @@ class ExpandableText extends React.Component {
 
 ExpandableText.defaultProps = {
   btnStyle: {
-    color: globalStyles.COLORS.highlight,
     fontSize: 12,
     fontWeight: 'bold',
     paddingBottom: 15,

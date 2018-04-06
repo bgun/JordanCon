@@ -72,7 +72,7 @@ let styles = StyleSheet.create({
 
 
 export default StackNavigator({
-  MoreScreen :  { screen: MoreScreen },
+  MoreScreen : { screen: MoreScreen },
   Directions : { screen: DirectionsScreen },
   About      : { screen: AboutScreen },
   HotelMap   : { screen: HotelMapScreen },

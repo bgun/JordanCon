@@ -166,7 +166,7 @@ class ScheduleScreen extends Component {
       <View style={{ flex: 1 }}>
         { this.state.searchResults.length ? (
           <View>
-            <View style={[styles.section, { marginTop: 80 }]}><Text style={ styles.sectionText }>SEARCH RESULTS</Text></View>
+            <View style={[styles.section, { backgroundColor: global.Store.getColor('highlight'), marginTop: 80 }]}><Text style={ styles.sectionText }>SEARCH RESULTS</Text></View>
             <ScrollView style={ styles.searchResults }>
               { this.state.searchResults.map(sr => (
                 <EventItem navigation={ this.props.navigation } key={ sr.event_id } event_id={ sr.event_id } />
@@ -205,7 +205,7 @@ export default StackNavigator({
   "Schedule":     { screen: ScheduleScreen },
   "EventDetail" : { screen: EventDetailScreen },
   "GuestDetail" : { screen: GuestDetailScreen },
-  "Feedback"    : { screen: FeedbackScreen }
+  "Feedback"    : { screen: FeedbackScreen },
 }, {
   navigationOptions: {
     tabBarLabel: "Schedule",
@@ -294,14 +294,7 @@ const styles = StyleSheet.create({
       left: 0,
     width: window.width
   },
-  searchResultsHeader: {
-    backgroundColor: globalStyles.COLORS.highlight,
-    marginTop: 40,
-    paddingHorizontal: 10,
-    paddingVertical: 15
-  },
   section: {
-    backgroundColor: globalStyles.COLORS.highlight,
     paddingHorizontal: 10,
     paddingVertical: 15,
     shadowColor: "#000000",

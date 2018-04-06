@@ -40,7 +40,7 @@ export default class EventDetailScreen extends Component {
       <ScrollView style={ styles.view }>
         <H1 style={ globalStyles.h1 }>{ event.title }</H1>
         <Text style={ styles.timeText  }>{ formatDate }</Text>
-        <Text style={ styles.locationText  }>{ event.location }</Text>
+        <Text style={ [styles.locationText, { color: global.Store.getColor('highlightAlt') }]  }>{ event.location }</Text>
         <HtmlView value={ event.description } />
         <H4>Guests</H4>
         <View style={[styles.list, globalStyles.floatingList]}>
@@ -71,7 +71,6 @@ const styles = StyleSheet.create({
     fontSize: 16
   },
   locationText: {
-    color: globalStyles.COLORS.highlightAlt,
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 10

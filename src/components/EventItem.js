@@ -45,11 +45,11 @@ export default class EventItem extends Component {
           <Text style={ styles.titleText }>{ this.state.event.title }</Text>
           <View style={{ flexDirection: 'row' }}>
             <Text style={ styles.timeText  }>{ this.state.event.formattedDateTime }</Text>
-            <Text style={ styles.locationText  }>{ this.state.event.location }</Text>
+            <Text style={ [styles.locationText, { color: global.Store.getColor('highlightAlt') }] }>{ this.state.event.location }</Text>
           </View>
         </View>
         { this.state.isTodo ? (
-          <Icon name="star" color={ globalStyles.COLORS.highlight } size={20} style={{ paddingTop: 8, paddingRight: 8 }} />
+          <Icon name="star" color={ global.Store.getColor('highlight') } size={20} style={{ paddingTop: 8, paddingRight: 8 }} />
         ) : null }
       </TouchableOpacity>
     );
@@ -74,7 +74,6 @@ const styles = StyleSheet.create({
     fontSize: 13
   },
   locationText: {
-    color: globalStyles.COLORS.highlightAlt,
     fontSize: 13,
     marginLeft: 13
   }

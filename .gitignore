@@ -18,3 +18,6 @@ SECRETS.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# don't track OSX turds
+.DS_Store

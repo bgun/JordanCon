@@ -47,6 +47,7 @@ let MainNavigator = TabNavigator({
 }, {
   tabBarPosition: 'bottom',
   tabBarOptions: {
+    activeTintColor: '#333',
     style: {
       height: 50
     },
@@ -116,11 +117,6 @@ let styles = StyleSheet.create({
     top: -20,
     left: 0,
     right: 0
-  },
-  navbar: {
-    backgroundColor: globalStyles.COLORS.headerBg,
-    borderBottomColor: '#324',
-    borderBottomWidth: 1,
   },
   scene: {
     paddingTop: 63

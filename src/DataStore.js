@@ -10,12 +10,19 @@ import {
 import packageJson from '../package.json';
 
 const DAYS_OF_WEEK = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-
 const DEFAULT_VENUE = {
   name: "",
   address: [],
   phone: "",
   maps_url: ""
+};
+const DEFAULT_COLORS = {
+  "border": "#DDD",
+  "headerBg": "#4270a9",
+  "highlight": "#1C8BAD",
+  "highlightDark": "#0e5166",
+  "highlightAlt": "#C83",
+  "feedbackBtn": "#678"
 };
 
 let fetchOptions = {
@@ -162,6 +169,14 @@ export default class DataStore {
   getAllEvents() {
     // already hydrated
     return this._data.sortedEvents;
+  }
+
+  getColor(key) {
+    if (this._data.colors) {
+      return this._data.colors[key];
+    } else {
+      return DEFAULT_COLORS[key];
+    }
   }
 
   getContent(key) {

@@ -16,7 +16,7 @@ export default class FeedbackButton extends Component {
 
   render() {
     return (
-      <TouchableOpacity style={ styles.button } onPress={ () => { this.props.navigation.navigate("Feedback", { subject: this.props.subject }) } }>
+      <TouchableOpacity style={ [styles.button, { backgroundColor: global.Store.getColor('feedbackBtn') }] } onPress={ () => { this.props.navigation.navigate("Feedback", { subject: this.props.subject }) } }>
         <Text style={ styles.buttonText }>Submit feedback for { this.props.subject }</Text>
       </TouchableOpacity>
     );
@@ -27,7 +27,6 @@ export default class FeedbackButton extends Component {
 const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
-    backgroundColor: globalStyles.COLORS.feedbackBtn,
     borderRadius: 10,
     marginTop: 10,
     paddingHorizontal: 20,

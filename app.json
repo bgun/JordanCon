@@ -3,7 +3,7 @@
     "sdkVersion": "25.0.0",
     "name": "JordanCon",
     "icon": "./assets/icon_1200.png",
-    "version": "4.0.0",
+    "version": "4.0.1",
     "slug": "jordancon",
     "splash": {
       "image": "./assets/splash.png",

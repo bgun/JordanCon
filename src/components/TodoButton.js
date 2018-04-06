@@ -28,11 +28,11 @@ export default class FeedbackButton extends Component {
     return (
       <View>
         { global.Store.isTodo(this.props.event.event_id) ? (
-          <TouchableOpacity style={ styles.buttonRemove } onPress={ () => this.handleRemoveTodo() }>
+          <TouchableOpacity style={[styles.buttonRemove, { backgroundColor: global.Store.getColor('highlightDark')}]} onPress={ () => this.handleRemoveTodo() }>
             <Text style={ styles.buttonText }>Remove from todo list</Text>
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity style={ styles.buttonAdd } onPress={ () => this.handleAddTodo() }>
+          <TouchableOpacity style={[styles.buttonAdd, { backgroundColor: global.Store.getColor('highlight') }]} onPress={ () => this.handleAddTodo() }>
             <Icon name="star" size={16} color="white" />
             <Text style={[styles.buttonText, { marginLeft: 10 }]}>Add to my todo list</Text>
           </TouchableOpacity>
@@ -46,7 +46,6 @@ export default class FeedbackButton extends Component {
 const styles = StyleSheet.create({
   buttonAdd: {
     alignItems: 'center',
-    backgroundColor: globalStyles.COLORS.highlight,
     borderRadius: 10,
     flexDirection: 'row',
     justifyContent: 'center',
@@ -55,7 +54,6 @@ const styles = StyleSheet.create({
   },
   buttonRemove: {
     alignItems: 'center',
-    backgroundColor: globalStyles.COLORS.highlightDark,
     borderRadius: 10,
     flexDirection: 'row',
     justifyContent: 'center',

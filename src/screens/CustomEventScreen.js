@@ -15,24 +15,30 @@ import {
 
 import globalStyles from '../globalStyles';
 
+import Icon from 'react-native-vector-icons/Entypo';
+
 import GuestItem from '../components/GuestItem';
 import { H1, H2, H3, H4 } from '../components/Headings';
 
-import SECRETS from '../../SECRETS.json';
 
+export default class CustomEventScreen extends Component {
 
-export default class FeedbackScreen extends Component {
-
-  static navigationOptions = { title: "Feedback" };
+  static navigationOptions = {
+    title: "Create Custom To-Do",
+    tabBarLabel: "Home",
+    tabBarIcon: ({ tintColor }) => (
+      <Icon name="home" size={ 24 } color={ tintColor } />
+    )
+  };
 
   constructor(props) {
     super();
     const conName = global.Store.getConName();
     this.state = {
-      text: null,
-      subject: props.navigation.state.params
-        ? [conName, props.navigation.state.params.subject].join(' | ')
-        : conName
+      day: null,
+      description: null,
+      time: null,
+      title: null
     }
   }
 
@@ -41,55 +47,21 @@ export default class FeedbackScreen extends Component {
   }
 
   handlePress() {
-
-    const MAILGUN_API_KEY = SECRETS.MAILGUN_API_KEY;
-    const domain = 'con-nexus.bgun.me';
-    
-    // let url = 'http://con-nexus.bgun.me/api/feedback';
-    let url = "https://api.mailgun.net/v3/"+domain+"/messages";
-    if (!this.state.text) {
-      global.makeToast("You haven't entered any text yet!");
-      return;
-    }
-
-    let formData = new FormData();
-    formData.append("from", "ben@con-nexus.bgun.me");
-    formData.append("to", "ben@bengundersen.com");
-
-    let conName = global.Store.getConName();
-
-    formData.append("subject", this.state.subject);
-    formData.append("text", this.state.text);
-
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Basic ' + base64.encode("api:" + MAILGUN_API_KEY),
-        'Accept': 'application/json',
-        'Content-Type': 'x-www-form-urlencoded'
-      },
-      body: formData
-    }).then(resp => {
-      console.log(resp);
-      Alert.alert("Thank you!", "Feedback submitted successfully.", [{ text: "Awesome!" }]);
-      this.setState({ text: "" });
-    }).catch(e => {
-      console.log("email error", e);
-      global.makeToast("Error submitting feedback");
-    });
   }
 
   render() {
     const subject = this.state.subject;
     return (
       <ScrollView style={ styles.view }>
-        <H2>Feedback for { subject }</H2>
+        <H2>Create a custom event</H2>
         <Text style={{ fontSize: 14, paddingVertical: 10 }}>
           Please enter your comments below. The feedback is anonymous. If you would like
           to be contacted with regard to your comment or question, please add contact details below.
           Thanks, we appreciate any and all feedback!
         </Text>
-        <H4>How was { subject }?</H4>
+        <TouchableOpacity onPress={ () => this.handlePress() } style={ [styles.button, { backgroundColor: global.Store.getColor('highlight') }] }>
+          <Text style={ styles.buttonText }>Submit</Text>
+        </TouchableOpacity>
         <View style={ styles.inputContainer }>
           <TextInput
             multiline={ true }

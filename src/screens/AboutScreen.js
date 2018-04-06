@@ -36,7 +36,7 @@ export default class AboutView extends Component {
         </View>
         <HtmlView value={ aboutText } />
 
-        <View style={{ borderTopColor: globalStyles.COLORS.border, borderTopWidth: 1, paddingTop: 10, marginTop: 30 }} />
+        <View style={{ borderTopColor: global.Store.getColor('border'), borderTopWidth: 1, paddingTop: 10, marginTop: 30 }} />
 
         <H3>About This App</H3>
 

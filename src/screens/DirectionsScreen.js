@@ -43,17 +43,17 @@ export default class DirectionsView extends Component {
         <View style={{ marginHorizontal: 10 }}>
           <H3>Hotel Info</H3>
         </View>
-        <View style={ styles.btn }>
+        <View style={ [styles.btn, { borderColor: global.Store.getColor('border') }] }>
           <ExternalLink url={ venue.maps_url }>
-            <Text style={[ styles.address, { fontWeight: 'bold' }]}>{ venue.name }</Text>
+            <Text style={[ styles.address, { color: global.Store.getColor('highlightDark'), fontWeight: 'bold' }]}>{ venue.name }</Text>
             { venue.address.map(line => (
-              <Text style={ styles.address }>{ line }</Text>
+              <Text style={[styles.address, { color: global.Store.getColor('highlightDark') }]}>{ line }</Text>
             )) }
           </ExternalLink>
         </View>
-        <View style={ styles.btn }>
+        <View style={ [styles.btn, { borderColor: global.Store.getColor('border') }] }>
           <ExternalLink url={ phoneUrl }>
-            <Text style={ styles.phone }>{ venue.phone }</Text>
+            <Text style={ [styles.phone, { color: global.Store.getColor('highlightDark') }] }>{ venue.phone }</Text>
           </ExternalLink>
         </View>
       </ScrollView>
@@ -68,13 +68,11 @@ const styles = StyleSheet.create({
     padding: 20
   },
   address: {
-    color: globalStyles.COLORS.highlightDark,
     fontSize: 16,
     marginBottom: 5,
     textAlign: 'center'
   },
   btn: {
-    borderColor: globalStyles.COLORS.border,
     borderRadius: 5,
     borderWidth: 1,
     margin: 10,
@@ -87,7 +85,6 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   phone: {
-    color: globalStyles.COLORS.highlightDark,
     fontWeight: 'bold',
     textAlign: 'center'
   }
