@@ -66,7 +66,10 @@ class DashboardScreen extends Component {
     return (
       <View style={ styles.container }>
         <ScrollView style={{ flex: 1, flexDirection: 'column' }}>
-          <Image style={{ height: getHeroHeight(), width: window.width }} source={{ uri: global.Store.getImage('DASHBOARD') }} />
+          <Image style={{ height: getHeroHeight(), width: window.width }} source={{
+            uri: global.Store.getImage('DASHBOARD'),
+            cache: 'force-cache'
+          }} />
           <Text style={ styles.todoTitleText }>MY TO-DO LIST</Text>
           { global.Store.getTodosArray().length > 0 ? (
           <ListView

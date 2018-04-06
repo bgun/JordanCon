@@ -118,7 +118,7 @@ export default class HotelMapScreen extends React.Component {
       >
         <Image
           style={[ styles.map, { width: HOTEL_MAP_WIDTH * scale, height: HOTEL_MAP_HEIGHT * scale, left: this.state.mapX, top: this.state.mapY } ]}
-          source={{ uri: global.Store.getImage('HOTEL_MAP') }}
+          source={{ uri: global.Store.getImage('HOTEL_MAP'), cache: 'force-cache' }}
         />
       </ScrollView>
     );
