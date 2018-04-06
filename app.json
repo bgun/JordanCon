@@ -14,6 +14,7 @@
     },
     "ios": {
       "bundleIdentifier": "org.jordancon.iosapp",
+      "buildNumber": "2",
       "supportsTablet": true
     },
     "android": {
