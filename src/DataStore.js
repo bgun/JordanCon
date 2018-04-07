@@ -89,6 +89,16 @@ export default class DataStore {
 
       this._data = con_data;
       this._data.guests = _.sortBy(this._data.guests, 'name');
+
+      todosData = todosData.map(item => {
+        if (typeof item === 'string') {
+          return {
+            event_id: item
+          }
+        } else {
+          return item;
+        }
+      });
       this._data.todos = todosData;
 
       let all_events = [];
