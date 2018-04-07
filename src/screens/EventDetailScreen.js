@@ -35,20 +35,26 @@ export default class EventDetailScreen extends Component {
       return null;
     }
     let formatDate = moment(event.day+" "+event.time).format('dddd h:mma');
+    let trackName = (event.custom ? "Custom Event" : event.trackName).toUpperCase();
 
     return (
       <ScrollView style={ styles.view }>
         <H1 style={ globalStyles.h1 }>{ event.title }</H1>
+        <Text style={ [styles.trackText, { color: global.Store.getColor('highlight') }]}>{ trackName }</Text>
         <Text style={ styles.timeText  }>{ formatDate }</Text>
         <Text style={ [styles.locationText, { color: global.Store.getColor('highlightAlt') }]  }>{ event.location }</Text>
-        <HtmlView value={ event.description } />
-        <H4>Guests</H4>
-        <View style={[styles.list, globalStyles.floatingList]}>
-          { event.guests ? event.guests.map(g => (
-            <GuestItem navigation={ this.props.navigation } key={ g } guest_id={ g } />
-          )) : null}
-        </View>
-        <TodoButton event={ event } />
+        <HtmlView value={ event.description } style={{ marginBottom: 10 }} />
+        { event.custom ? null : (
+          <View>
+            <H4>Guests</H4>
+            <View style={[styles.list, globalStyles.floatingList]}>
+              { event.guests ? event.guests.map(g => (
+                <GuestItem navigation={ this.props.navigation } key={ g } guest_id={ g } />
+              )) : null}
+            </View>
+          </View>
+        ) }
+        <TodoButton event={ event } navigation={ this.props.navigation } />
         <FeedbackButton navigation={ this.props.navigation } subject={ event.title } />
         <View style={{ height: 30 }} />
       </ScrollView>
@@ -66,9 +72,15 @@ const styles = StyleSheet.create({
   list: {
     marginBottom: 30
   },
+  trackText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5
+  },
   timeText: {
     color: '#666666',
-    fontSize: 16
+    fontSize: 16,
+    marginBottom: 5,
   },
   locationText: {
     fontSize: 16,

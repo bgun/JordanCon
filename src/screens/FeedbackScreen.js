@@ -102,6 +102,7 @@ export default class FeedbackScreen extends Component {
         <TouchableOpacity onPress={ () => this.handlePress() } style={ [styles.button, { backgroundColor: global.Store.getColor('highlight') }] }>
           <Text style={ styles.buttonText }>Submit</Text>
         </TouchableOpacity>
+        <View style={{ height: 250 }} />
       </ScrollView>
     );
   }

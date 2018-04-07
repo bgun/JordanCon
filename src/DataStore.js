@@ -32,6 +32,16 @@ let fetchOptions = {
   }
 };
 
+// not a real guid, but good enough for us
+function guid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+  return s4() + s4() + s4();
+}
+
 
 // this needs to exist in case an EventItem is rendered before todos are created
 
@@ -79,10 +89,14 @@ export default class DataStore {
 
       this._data = con_data;
       this._data.guests = _.sortBy(this._data.guests, 'name');
-      this._data.todoSet = new Set(todosData);
+      this._data.todos = todosData;
+
       let all_events = [];
-      Object.keys(this._data.tracks).forEach(k => {
-        all_events = all_events.concat(this._data.tracks[k].events || []);
+      this._data.tracks.forEach(track => {
+        track.events.forEach(ev => {
+          ev.trackName = track.name;
+        });
+        all_events = all_events.concat(track.events || []);
       });
       all_events = _.sortBy(all_events, ["day", "time"]).map(this._hydrateEvent);
       this._data.sortedEvents = all_events;
@@ -140,7 +154,12 @@ export default class DataStore {
     return new Promise((resolve, reject) => {
       AsyncStorage.getItem('todo')
         .then(resp => {
-          let todos = new Set(JSON.parse(resp));
+          let todos = [];
+          try {
+            todos = JSON.parse(resp);
+          } catch(e) {
+            console.error(e);
+          }
           resolve(todos);
         })
         .catch(e => {
@@ -149,6 +168,19 @@ export default class DataStore {
         })
         .done();
     });
+  }
+
+  _saveTodos() {
+    let todos = this._data.todos;
+    console.log("saving todos", todos);
+    AsyncStorage.setItem('todo', JSON.stringify(todos))
+      .then(resp => {
+        console.log("saving "+todos.length+" todos", resp);
+      })
+      .catch(e => {
+        global.makeToast("Error saving to-do list", "error");
+      })
+      .done();
   }
 
   // Add calculated fields an event.
@@ -161,8 +193,14 @@ export default class DataStore {
     return e;
   }
 
+  addCustomTodo(custom) {
+    custom.event_id = guid();
+    custom.custom = true;
+    this.addTodo(custom);
+  }
+
   addTodo(item) {
-    this._data.todoSet.add(item);
+    this._data.todos.push(item);
     this._saveTodos();
   }
 
@@ -183,6 +221,31 @@ export default class DataStore {
     return this._data.content[key];
   }
 
+  /**
+   *  Returns an array of Moment days corresponding to the dates the
+   *  convention operates.
+   *  offsetByOne: Return an extra day
+   *  either side of the start/end dates.
+   *  Used for to-do lists
+   */
+  getConDays(offsetByOne) {
+    let currentDay = null;
+    let dayArray = [];
+    let conDays = this._data.sortedEvents.forEach(e => {
+      if (e.day !== currentDay) {
+        dayArray.push(e.day);
+      }
+      currentDay = e.day;
+    });
+    if (offsetByOne) {
+      let prev = moment(dayArray[0]).subtract(1, 'day').format('YYYY-MM-DD');
+      dayArray.unshift(prev);
+      let next = moment(dayArray[dayArray.length-1]).add(1, 'day').format('YYYY-MM-DD');
+      dayArray.push(next);
+    }
+    return dayArray;
+  }
+
   getVenueInfo() {
     return Object.assign({}, DEFAULT_VENUE, this._data.venue);
   }
@@ -199,11 +262,21 @@ export default class DataStore {
     return this._data.dimensions[key];
   }
 
+  /**
+   *  Find and return the first valid event, whether it's from the calendar or
+   *  the custom list. Yes, todos of calendar events would return just a "bare"
+   *  event_id object, but as this returns the first event found, it will always
+   *  return a valid calendar event before it reaches the todo list.
+   */
   getEventById(event_id) {
-    let ev = _.find(this.getAllEvents(), e => (e.event_id === event_id));
+    let all = this.getAllEvents().concat(this.getTodosArray(true));
+    let ev = _.find(all, e => (e.event_id === event_id));
     if (!ev) {
       console.warn("Event ["+event_id+"] not found!");
       return null;
+    }
+    if (ev.custom) {
+      return this._hydrateEvent(ev);
     }
     return ev;
   }
@@ -241,9 +314,22 @@ export default class DataStore {
     return this._data.images[key];
   }
 
-  getTodosArray() {
-    let todos = Array.from(this._data.todoSet);
-    todos = todos.map(this.getEventById.bind(this)).filter(t => !!t);
+  /**
+   *  Todos from events on the Calendar are saved
+   *  simply as an ID so they stay current.
+   *  Custom todos are stored complete.
+   */
+  getTodosArray(customOnly) {
+    if (customOnly) {
+      return this._data.todos.filter(todo => todo.custom);
+    }
+    let todos = this._data.todos.map(todo => {
+      if (todo.custom) {
+        return todo;
+      } else {
+        return this.getEventById(todo.event_id);
+      }
+    }).filter(t => !!t);
     todos = _.sortBy(todos, ["day", "time"]);
     return todos;
   }
@@ -253,11 +339,11 @@ export default class DataStore {
   }
 
   isTodo(event_id) {
-    return this._data.todoSet.has(event_id);
+    return _.find(this._data.todos, ev => event_id === ev.event_id);
   }
 
-  removeTodo(item) {
-    this._data.todoSet.delete(item);
+  removeTodo(event_id) {
+    _.pullAllBy(this._data.todos, [{ event_id: event_id }], 'event_id');
     this._saveTodos();
   }
 
@@ -266,19 +352,5 @@ export default class DataStore {
       return e.title.toLowerCase().indexOf(text.toLowerCase()) > -1;
     });
     return results;
-  }
-
-  _saveTodos() {
-    let todo_array = Array.from(this._data.todoSet);
-    console.log("saving todos");
-    AsyncStorage.setItem('todo', JSON.stringify(todo_array))
-      .then(resp => {
-        console.log("saving "+todo_array.length+" todos", resp);
-      })
-      .catch(e => {
-        global.makeToast("Error saving to-do list", "error");
-        resolve(false);
-      })
-      .done();
   }
 }

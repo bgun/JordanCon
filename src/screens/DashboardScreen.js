@@ -20,8 +20,10 @@ import Icon from 'react-native-vector-icons/Entypo';
 
 import _ from 'lodash';
 
-import CustomEventScreen from './CustomEventScreen';
 import EventItem from '../components/EventItem';
+
+import CustomEventScreen from './CustomEventScreen';
+import EventDetailScreen from './EventDetailScreen';
 
 import globalStyles from '../globalStyles';
 
@@ -36,11 +38,7 @@ let getHeroHeight = function() {
 class DashboardScreen extends Component {
 
   static navigationOptions = {
-    title: "Dashboard",
-    tabBarLabel: "Home",
-    tabBarIcon: ({ tintColor }) => (
-      <Icon name="home" size={ 24 } color={ tintColor } />
-    )
+    title: "Dashboard"
   };
 
   constructor(props) {
@@ -96,7 +94,15 @@ class DashboardScreen extends Component {
 
 export default StackNavigator({
   "Dashboard"   : { screen: DashboardScreen },
-  "CustomEvent" : { screen: CustomEventScreen }
+  "CustomEvent" : { screen: CustomEventScreen },
+  "EventDetail" : { screen: EventDetailScreen }
+}, {
+  navigationOptions: {
+    tabBarLabel: "Home",
+    tabBarIcon: ({ tintColor }) => (
+      <Icon name="home" size={ 24 } color={ tintColor } />
+    )
+  }
 });
 
 const styles = StyleSheet.create({

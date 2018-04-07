@@ -126,7 +126,7 @@ class ScheduleScreen extends Component {
 
   renderSectionHeader(sectionData, sectionID) {
     return (
-      <View style={ styles.section }>
+      <View style={[ styles.section, { backgroundColor: global.Store.getColor('highlight') } ]}>
         <Text style={ styles.sectionText }>
           { sectionData.format('dddd, MMMM D').toUpperCase() }
         </Text>

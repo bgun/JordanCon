@@ -48,7 +48,6 @@ export default class HotelMapScreen extends React.Component {
   }
 
   onMapZoomOut() {
-    console.log("out");
     let newScale = this.scale * 0.8;
     if (newScale < 0.5) {
       newScale = 0.5;

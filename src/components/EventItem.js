@@ -32,6 +32,7 @@ export default class EventItem extends Component {
 
   render() {
     // This may happen if an event is in your todos and gets deleted.
+    const ev = this.state.event;
     if (!this.state.event) {
       console.warn("Event not found!", this.props.event_id);
       return null;
@@ -39,8 +40,16 @@ export default class EventItem extends Component {
 
     const { navigate } = this.props.navigation;
 
+    let labelStyle = {};
+    if (ev.labelColor) {
+      labelStyle = {
+        borderLeftWidth: 8,
+        borderLeftColor: ev.labelColor
+      };
+    }
+
     return (
-      <TouchableOpacity style={[globalStyles.floatingListItem, styles.item]} onPress={ () => navigate("EventDetail", { navigation: this.props.navigation, event_id: this.state.event_id }) }>
+      <TouchableOpacity style={[globalStyles.floatingListItem, styles.item, labelStyle ]} onPress={ () => navigate("EventDetail", { navigation: this.props.navigation, event_id: this.state.event_id }) }>
         <View style={{ flex: 1 }}>
           <Text style={ styles.titleText }>{ this.state.event.title }</Text>
           <View style={{ flexDirection: 'row' }}>
@@ -60,7 +69,7 @@ export default class EventItem extends Component {
 const styles = StyleSheet.create({
   item: {
     backgroundColor: 'white',
-    borderRadius: 5,
+    borderRadius: 3,
     flex: 1,
     flexDirection: 'row',
     paddingHorizontal: 10,
