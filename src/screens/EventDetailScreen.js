@@ -44,6 +44,7 @@ export default class EventDetailScreen extends Component {
         <Text style={ styles.timeText  }>{ formatDate }</Text>
         <Text style={ [styles.locationText, { color: global.Store.getColor('highlightAlt') }]  }>{ event.location }</Text>
         <HtmlView value={ event.description } style={{ marginBottom: 10 }} />
+
         { event.custom ? null : (
           <View>
             <H4>Guests</H4>
@@ -54,8 +55,12 @@ export default class EventDetailScreen extends Component {
             </View>
           </View>
         ) }
+
         <TodoButton event={ event } navigation={ this.props.navigation } />
-        <FeedbackButton navigation={ this.props.navigation } subject={ event.title } />
+
+        { event.custom ? null : (
+          <FeedbackButton navigation={ this.props.navigation } subject={ event.title } />
+        ) }
         <View style={{ height: 30 }} />
       </ScrollView>
     );
