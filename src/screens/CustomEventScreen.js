@@ -25,11 +25,11 @@ import { H1, H2, H3, H4 } from '../components/Headings';
 
 const LABEL_COLORS = [
   null,
-  '#F00',
-  '#0F0',
-  '#00F',
-  '#F0F',
-  '#0FF'
+  '#2C73D2',
+  '#D65DB1',
+  '#00C9A7',
+  '#FFC75F',
+  '#C34A36'
 ];
 const FORM_INVALID_COLOR = '#DD0000AA';
 
