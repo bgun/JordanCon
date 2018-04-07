@@ -99,6 +99,7 @@ export default class DataStore {
           return item;
         }
       });
+      
       this._data.todos = todosData;
 
       let all_events = [];
