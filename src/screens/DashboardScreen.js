@@ -59,7 +59,8 @@ class DashboardScreen extends Component {
   }
 
   render() {
-    let dataSource = this.state.dataSource.cloneWithRows(global.Store.getTodosArray());
+    let todos = _.sortBy(global.Store.getTodosArray(), ["day", "time"]);
+    let dataSource = this.state.dataSource.cloneWithRows(todos);
 
     return (
       <View style={ styles.container }>

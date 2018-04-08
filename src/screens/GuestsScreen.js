@@ -4,11 +4,12 @@ import _ from 'lodash';
 import React from 'react';
 
 import {
+  FlatList,
   InteractionManager,
-  ListView,
   SafeAreaView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View
 } from 'react-native';
 
@@ -32,21 +33,37 @@ class GuestsList extends React.Component {
     )
   };
 
-  constructor(props) {
+  constructor() {
     super();
-    let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
-      dataSource: ds.cloneWithRows(global.Store.getGuests())
-    };
+      sortField: 'name'
+    }
+  }
+
+  handleSort(sortField) {
+    this.setState({
+      sortField: sortField
+    });
   }
 
   render() {
+    const guestsArray = global.Store.getGuests(this.state.sortField);
     return (
-      <ListView
+      <FlatList
         style={ styles.scroll }
-        removeClippedSubviews={ false }
-        dataSource={ this.state.dataSource }
-        renderRow={ rowData => <GuestItem navigation={ this.props.navigation } key={ rowData.guest_id } guest_id={ rowData.guest_id } /> }
+        data={ guestsArray }
+        renderItem={ ({item}) => <GuestItem showCount={ true } navigation={ this.props.navigation } key={ item.guest_id } guest_id={ item.guest_id } /> }
+        stickyHeaderIndices={[0]}
+        ListHeaderComponent={(
+          <View style={ styles.listHeader }>
+            <TouchableOpacity onPress={ () => this.handleSort('name') } style={[ styles.sortButton, { borderTopRightRadius: 0, borderBottomRightRadius: 0, backgroundColor: this.state.sortField === 'name' ? global.Store.getColor('highlight') : '#EEE' }]}>
+              <Text style={[ styles.sortButtonText, { color: this.state.sortField === 'name' ? 'white' : '#666' }] }>First Name</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={ () => this.handleSort('last_name_first') } style={[ styles.sortButton, { borderTopLeftRadius: 0, borderBottomLeftRadius: 0, backgroundColor: this.state.sortField === 'last_name_first' ? global.Store.getColor('highlight') : '#EEE' }]}>
+              <Text style={[ styles.sortButtonText, { color: this.state.sortField === 'last_name_first' ? 'white' : '#666' }] }>Last Name</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       />
     );
   }
@@ -71,5 +88,25 @@ const styles = StyleSheet.create({
   scroll: {
     backgroundColor: '#FFFFFF',
     flex: 1
+  },
+  listHeader: {
+    backgroundColor: 'white',
+    borderBottomWidth: 1,
+    borderBottomColor: '#DDD',
+    height: 44,
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  sortButton: {
+    alignItems: 'center',
+    background: '#EEE',
+    borderRadius: 10,
+    height: 32,
+    justifyContent: 'center',
+    width: 120
+  },
+  sortButtonText: {
   }
 });

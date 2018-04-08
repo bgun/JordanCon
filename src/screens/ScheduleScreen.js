@@ -96,6 +96,16 @@ class ScheduleScreen extends Component {
     };
   }
 
+  componentWillMount() {
+    this._focusSub = this.props.navigation.addListener('didFocus', () => {
+      this.forceUpdate();
+    });
+  }
+
+  componentWillUnmount() {
+    this._focusSub.remove();
+  }
+
   handleFilterInput(text) {
     if (text.length > 2) {
       let filteredEvents = global.Store.searchEvents(text);
@@ -221,7 +231,7 @@ export default StackNavigator({
 const styles = StyleSheet.create({
   filterContainer: {
     backgroundColor: 'white',
-    borderBottomColor: '#DDDDDD',
+    borderBottomColor: '#DDD',
     borderBottomWidth: 1,
     height: 40,
     paddingHorizontal: 10,
@@ -276,7 +286,7 @@ const styles = StyleSheet.create({
     height: 50
   },
   scroll: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFF',
     flex: 1,
     marginTop: 90
   },
@@ -297,7 +307,7 @@ const styles = StyleSheet.create({
   section: {
     paddingHorizontal: 10,
     paddingVertical: 15,
-    shadowColor: "#000000",
+    shadowColor: "#000",
     shadowOpacity: 0.5,
     shadowRadius: 10
   },

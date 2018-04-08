@@ -34,14 +34,13 @@ export default class EventDetailScreen extends Component {
       console.warn("Event not found!", event_id);
       return null;
     }
-    let formatDate = moment(event.day+" "+event.time).format('dddd h:mma');
     let trackName = (event.custom ? "Custom Event" : event.trackName).toUpperCase();
 
     return (
       <ScrollView style={ styles.view }>
         <H1 style={ globalStyles.h1 }>{ event.title }</H1>
         <Text style={ [styles.trackText, { color: global.Store.getColor('highlight') }]}>{ trackName }</Text>
-        <Text style={ styles.timeText  }>{ formatDate }</Text>
+        <Text style={ styles.timeText }>{ event.formattedDateTime }</Text>
         <Text style={ [styles.locationText, { color: global.Store.getColor('highlightAlt') }]  }>{ event.location }</Text>
         <HtmlView value={ event.description } style={{ marginBottom: 10 }} />
 

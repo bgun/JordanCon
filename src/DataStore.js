@@ -88,7 +88,6 @@ export default class DataStore {
       }
 
       this._data = con_data;
-      this._data.guests = _.sortBy(this._data.guests, 'name');
 
       todosData = todosData.map(item => {
         if (typeof item === 'string') {
@@ -111,6 +110,14 @@ export default class DataStore {
       });
       all_events = _.sortBy(all_events, ["day", "time"]).map(this._hydrateEvent);
       this._data.sortedEvents = all_events;
+      this._data.guests = this._data.guests.map(g => {
+        let parts = g.name.split(' ');
+        let l = parts[parts.length-1];
+        parts.pop();
+        g.last_name_first = l+', '+parts.join(' ');
+        g.event_count = this.getEventsForGuest(g.guest_id).length;
+        return g;
+      });
 
       cb({
         msg: msg
@@ -183,10 +190,9 @@ export default class DataStore {
 
   _saveTodos() {
     let todos = this._data.todos;
-    console.log("saving todos", todos);
     AsyncStorage.setItem('todo', JSON.stringify(todos))
       .then(resp => {
-        console.log("saving "+todos.length+" todos", resp);
+        console.log("saving "+todos.length+" todos");
       })
       .catch(e => {
         global.makeToast("Error saving to-do list", "error");
@@ -212,6 +218,16 @@ export default class DataStore {
 
   addTodo(item) {
     this._data.todos.push(item);
+    this._saveTodos();
+  }
+
+  changeTodo(item) {
+    this._data.todos = this._data.todos.map(todo => {
+      if (todo.event_id === item.event_id) {
+        Object.assign(todo, item);
+      }
+      return todo;
+    });
     this._saveTodos();
   }
 
@@ -280,16 +296,27 @@ export default class DataStore {
    *  return a valid calendar event before it reaches the todo list.
    */
   getEventById(event_id) {
-    let all = this.getAllEvents().concat(this.getTodosArray(true));
-    let ev = _.find(all, e => (e.event_id === event_id));
-    if (!ev) {
+    let foundEvent = _.find(this.getAllEvents(), e => e.event_id === event_id);
+    let foundTodo  = _.find(this.getTodosArray(), e => e.event_id === event_id);
+
+    let ev = null;
+
+    if (foundEvent && foundTodo) {
+      // a calendar event with custom fields
+      ev = Object.assign({}, foundEvent, foundTodo);
+      // console.log("getEventById found a customized calendar event.", ev);
+    } else if (foundEvent && !foundTodo) {
+      // just a plain calendar event
+      ev = foundEvent;
+      // console.log("getEventById found a regular calendar event.", ev);
+    } else if (!foundEvent && foundTodo) {
+      // it's custom event
+      ev = foundTodo;
+      // console.log("getEventById found a todo.", ev);
+    } else {
       console.warn("Event ["+event_id+"] not found!");
-      return null;
     }
-    if (ev.custom) {
-      return this._hydrateEvent(ev);
-    }
-    return ev;
+    return this._hydrateEvent(ev);
   }
 
   getEventsByTrack(trackName) {
@@ -309,8 +336,9 @@ export default class DataStore {
       .map(e => e.event_id);
   }
 
-  getGuests() {
-    return this._data.guests;
+  getGuests(sortField) {
+    let guests = _.sortBy(this._data.guests, sortField || 'name');
+    return guests;
   }
 
   getGuestById(guest_id) {
@@ -325,24 +353,9 @@ export default class DataStore {
     return this._data.images[key];
   }
 
-  /**
-   *  Todos from events on the Calendar are saved
-   *  simply as an ID so they stay current.
-   *  Custom todos are stored complete.
-   */
-  getTodosArray(customOnly) {
-    if (customOnly) {
-      return this._data.todos.filter(todo => todo.custom);
-    }
-    let todos = this._data.todos.map(todo => {
-      if (todo.custom) {
-        return todo;
-      } else {
-        return this.getEventById(todo.event_id);
-      }
-    }).filter(t => !!t);
-    todos = _.sortBy(todos, ["day", "time"]);
-    return todos;
+  getTodosArray() {
+    let arr = this._data.todos.filter(todo => !!todo.event_id);
+    return arr;
   }
 
   getTrackNames() {
@@ -350,7 +363,7 @@ export default class DataStore {
   }
 
   isTodo(event_id) {
-    return _.find(this._data.todos, ev => event_id === ev.event_id);
+    return !!_.find(this._data.todos, ev => event_id === ev.event_id);
   }
 
   removeTodo(event_id) {

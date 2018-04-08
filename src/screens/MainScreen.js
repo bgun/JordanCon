@@ -84,6 +84,9 @@ export default class MainScreen extends React.Component {
         loaded: true
       });
     });
+    global.settings = {
+      sortGuestsByLastName: true
+    };
   }
 
   render() {
@@ -95,6 +98,7 @@ export default class MainScreen extends React.Component {
     }
     return (
       <View style={[ styles.mainView, { paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight } ]}>
+        <StatusBar barStyle="dark-content" />
         { main }
         <Toast />
       </View>

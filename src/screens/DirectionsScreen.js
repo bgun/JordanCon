@@ -36,7 +36,7 @@ export default class DirectionsView extends Component {
         <View style={{ marginHorizontal: 10 }}>
           <H3>Convention Maps</H3>
         </View>
-        <TouchableOpacity style={ styles.btn } onPress={ () => navigate("HotelMap") }>
+        <TouchableOpacity style={[ styles.btn, { backgroundColor: global.Store.getColor('highlight') } ]} onPress={ () => navigate("HotelMap") }>
           <Text style={ styles.btnText }>Hotel Map</Text>
         </TouchableOpacity>
 
@@ -74,12 +74,11 @@ const styles = StyleSheet.create({
   },
   btn: {
     borderRadius: 5,
-    borderWidth: 1,
     margin: 10,
     padding: 10
   },
   btnText: {
-    color: '#548',
+    color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center'

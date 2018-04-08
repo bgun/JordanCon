@@ -5,7 +5,6 @@ import moment from 'moment';
 import React, { Component } from 'react';
 
 import {
-  Alert,
   KeyboardAvoidingView,
   ScrollView,
   StyleSheet,
@@ -21,16 +20,9 @@ import globalStyles from '../globalStyles';
 import Icon from 'react-native-vector-icons/Entypo';
 
 import GuestItem from '../components/GuestItem';
+import LabelColorPicker from '../components/LabelColorPicker';
 import { H1, H2, H3, H4 } from '../components/Headings';
 
-const LABEL_COLORS = [
-  null,
-  '#2C73D2',
-  '#D65DB1',
-  '#00C9A7',
-  '#FFC75F',
-  '#C34A36'
-];
 const FORM_INVALID_COLOR = '#DD0000AA';
 
 
@@ -55,7 +47,7 @@ export default class CustomEventScreen extends Component {
       timeHours: ""+(moment().add(1, 'hour').hour() % 12),
       timeMins: "00",
       timeIsPM: moment().add(1, 'hour').hour() > 12,
-      labelColor: LABEL_COLORS[0],
+      labelColor: null,
       formValid: false,
       formInvalidMessage: "Form invalid"
     }
@@ -239,18 +231,7 @@ export default class CustomEventScreen extends Component {
           </View>
 
           <H3>Label color:</H3>
-          <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
-          { LABEL_COLORS.map(color => {
-            const isCur = state.labelColor === color;
-            return (
-              <TouchableOpacity
-                onPress={ () => this.handleColorChange(color) }
-                style={{ alignItems: 'center', justifyContent: 'center', borderRadius: 7, borderWidth: isCur ? 3 : 1, borderColor: isCur ? '#555' : '#DDD', marginRight: 5 }}>
-                <View style={{ borderRadius: 4, backgroundColor: color, height: 30, margin: 2, width: 40 }}></View>
-              </TouchableOpacity>
-            )
-          })}
-          </View>
+          <LabelColorPicker onColorChange={ this.handleColorChange.bind(this) } />
 
           { this.state.formValid ? (
             <TouchableOpacity onPress={ this.handleSubmit.bind(this) } style={[ styles.submitButton, { backgroundColor: global.Store.getColor('highlight') } ]}>

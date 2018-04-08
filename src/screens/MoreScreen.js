@@ -29,7 +29,7 @@ class MenuItem extends React.Component {
   render() {
     return (
       <TouchableOpacity style={ styles.menuItem } onPress={ () => this.props.navigation.navigate(this.props.link) }>
-        <Icon name={ this.props.icon } size={16} />
+        <Icon name={ this.props.icon } size={16} color={ global.Store.getColor('highlightDark') } />
         <View style={{ width: 16 }} />
         <Text style={ styles.menuItemText }>{ this.props.text }</Text>
       </TouchableOpacity>

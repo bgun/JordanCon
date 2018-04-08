@@ -18,46 +18,35 @@ import globalStyles from '../globalStyles';
 
 export default class EventItem extends Component {
 
-  constructor(props) {
-    super();
-
-    let event = global.Store.getEventById(props.event_id);
-    
-    this.state = event ? {
-      event_id: event.event_id,
-      event: event,
-      isTodo: global.Store.isTodo(event.event_id)
-    } : {};
-  }
-
   render() {
-    // This may happen if an event is in your todos and gets deleted.
-    const ev = this.state.event;
-    if (!this.state.event) {
-      console.warn("Event not found!", this.props.event_id);
+    let event = global.Store.getEventById(this.props.event_id);
+    const isTodo = global.Store.isTodo(event.event_id);
+
+    if (!event) {
+      console.warn("Event not found for <EventItem>!", this.props.event_id);
       return null;
     }
 
     const { navigate } = this.props.navigation;
 
     let labelStyle = {};
-    if (ev.labelColor) {
+    if (event.labelColor) {
       labelStyle = {
         borderLeftWidth: 8,
-        borderLeftColor: ev.labelColor
+        borderLeftColor: event.labelColor
       };
     }
 
     return (
-      <TouchableOpacity style={[globalStyles.floatingListItem, styles.item, labelStyle ]} onPress={ () => navigate("EventDetail", { navigation: this.props.navigation, event_id: this.state.event_id }) }>
+      <TouchableOpacity style={[globalStyles.floatingListItem, styles.item, labelStyle ]} onPress={ () => navigate("EventDetail", { navigation: this.props.navigation, event_id: event.event_id }) }>
         <View style={{ flex: 1 }}>
-          <Text style={ styles.titleText }>{ this.state.event.title }</Text>
+          <Text style={ styles.titleText }>{ event.title }</Text>
           <View style={{ flexDirection: 'row' }}>
-            <Text style={ styles.timeText  }>{ this.state.event.formattedDateTime }</Text>
-            <Text style={ [styles.locationText, { color: global.Store.getColor('highlightAlt') }] }>{ this.state.event.location }</Text>
+            <Text style={ styles.timeText  }>{ event.formattedDateTime }</Text>
+            <Text style={ [styles.locationText, { color: global.Store.getColor('highlightAlt') }] }>{ event.location }</Text>
           </View>
         </View>
-        { this.state.isTodo ? (
+        { isTodo ? (
           <Icon name="star" color={ global.Store.getColor('highlight') } size={20} style={{ paddingTop: 8, paddingRight: 8 }} />
         ) : null }
       </TouchableOpacity>
