@@ -68,32 +68,30 @@ export default class CustomEventScreen extends Component {
     let valid = false;
     if (!isNaN(parseInt(val))) {
       val = parseInt(val);
-      if (h < 1) {
-        h = "00";
-      } else if (h > 12) {
-        h = h % 12;
+      if (val < 1) {
+        val = "00";
+      } else if (val > 12) {
+        val = val % 12;
       }
       valid = true;
     }
-    this.setState({ timeHours: valid ? val : null });
+    this.setState({ timeHours: valid ? val : "" });
     this.validateForm();
   }
 
   handleMinsChange(val) {
     let valid = false;
     if (!isNaN(parseInt(val))) {
-      let m = parseInt(val);
-      m = m % 60;
-      if (m === 0) {
+      val = parseInt(val);
+      val = val % 60;
+      if (val === 0) {
         val = "00";
-      } else if (m < 10) {
-        val = "0"+m;
-      } else {
-        val = ""+m;
+      } else if (val < 10) {
+        val = "0"+val;
       }
       valid = true;
     }
-    this.setState({ timeMins: valid ? val : null });
+    this.setState({ timeMins: valid ? val : "" });
     this.validateForm();
   }
 
@@ -119,7 +117,7 @@ export default class CustomEventScreen extends Component {
   }
 
   handleSubmit() {
-    const hour = this.state.timeIsPM ? ""+(parseInt(this.state.timeHours)+12) : this.state.timeHours;
+    const hour = this.state.timeIsPM ? ""+(parseInt(this.state.timeHours)+12) : parseInt(this.state.timeHours) % 12;
     let newTodo = {
       day: this.state.day,
       title: this.state.title,
