@@ -39,31 +39,62 @@ export default class CustomEventScreen extends Component {
   constructor(props) {
     super();
     const conName = global.Store.getConName();
+    
+    let nextHour24 = moment().add(1, 'hour').hour();
+    let nextHour12 = (nextHour24 > 12) ? nextHour24 % 12 : nextHour24;
+
+    this._validationTimeout = null;
+
     this.state = {
       day: "", // moment().format('YYYY-MM-DD'),
       title: "",
       location: "",
       description: "",
-      timeHours: ""+(moment().add(1, 'hour').hour() % 12),
+      timeHours: ""+nextHour12,
       timeMins: "00",
-      timeIsPM: moment().add(1, 'hour').hour() > 12,
+      timeIsPM: nextHour24 >= 12,
       labelColor: null,
       formValid: false,
-      formInvalidMessage: "Form invalid"
+      formInvalidMessage: "Please select a day."
     }
   }
 
   handleDayPress(day) {
+    this.validateForm();
     this.setState({ day: day });
-    setTimeout(() => this.validateForm(), 200);
   }
 
   handleHoursChange(val) {
-    this.setState({ timeHours: val });
+    let valid = false;
+    if (!isNaN(parseInt(val))) {
+      val = parseInt(val);
+      if (h < 1) {
+        h = "00";
+      } else if (h > 12) {
+        h = h % 12;
+      }
+      valid = true;
+    }
+    this.setState({ timeHours: valid ? val : null });
+    this.validateForm();
   }
 
   handleMinsChange(val) {
-    this.setState({ timeMins: val });
+    let valid = false;
+    if (!isNaN(parseInt(val))) {
+      let m = parseInt(val);
+      m = m % 60;
+      if (m === 0) {
+        val = "00";
+      } else if (m < 10) {
+        val = "0"+m;
+      } else {
+        val = ""+m;
+      }
+      valid = true;
+    }
+    this.setState({ timeMins: valid ? val : null });
+    this.validateForm();
   }
 
   handleLocationChange(val) {
@@ -75,6 +106,7 @@ export default class CustomEventScreen extends Component {
   }
 
   handleTitleChange(val) {
+    this.validateForm();
     this.setState({ title: val });
   }
 
@@ -96,6 +128,7 @@ export default class CustomEventScreen extends Component {
       time: hour+":"+this.state.timeMins,
       labelColor: this.state.labelColor
     };
+    console.log(newTodo);
     global.Store.addCustomTodo(newTodo);
     this.props.navigation.goBack();
   }
@@ -105,35 +138,39 @@ export default class CustomEventScreen extends Component {
     // Remember to check in reverse priority 
     // of the error messages to be displayed.
 
-    let valid = true;
-    let invalidMsg = "";
+    clearTimeout(this._validationTimeout);
 
-    let hours = parseInt(this.state.timeHours);
-    if (isNaN(hours)) {
-      valid = false;
-      invalidMsg = "Invalid hour.";
-    }
+    this._validationTimeout = setTimeout(() => {
+      let valid = true;
+      let invalidMsg = "";
 
-    let mins  = parseInt(this.state.timeMins);
-    if (isNaN(mins)) {
-      valid = false;
-      invalidMsg = "Invalid minutes.";
-    }
+      let hours = parseInt(this.state.timeHours);
+      if (isNaN(hours)) {
+        valid = false;
+        invalidMsg = "Invalid hour.";
+      }
 
-    if (!(this.state.title && this.state.title.length > 0)) {
-      valid = false;
-      invalidMsg = "Please enter a title.";
-    }
+      let mins  = parseInt(this.state.timeMins);
+      if (isNaN(mins)) {
+        valid = false;
+        invalidMsg = "Invalid minutes.";
+      }
 
-    if (!this.state.day) {
-      valid = false;
-      invalidMsg = "Please select a day.";
-    }
+      if (!(this.state.title && this.state.title.length > 0)) {
+        valid = false;
+        invalidMsg = "Please enter a title.";
+      }
 
-    this.setState({
-      formValid: valid,
-      formInvalidMessage: invalidMsg
-    });
+      if (!this.state.day) {
+        valid = false;
+        invalidMsg = "Please select a day.";
+      }
+
+      this.setState({
+        formValid: valid,
+        formInvalidMessage: invalidMsg
+      });
+    }, 200);
   }
 
   render() {
@@ -141,29 +178,8 @@ export default class CustomEventScreen extends Component {
     const days = global.Store.getConDays(true);
     const state = this.state;
 
-    let validHours = "";
-    if (!isNaN(parseInt(state.timeHours))) {
-      let h = parseInt(state.timeHours);
-      if (h < 1) {
-        h = "";
-      }
-      if (h > 12) {
-        h = h % 12;
-      }
-      validHours = ""+h; // must return a string or the input will be blank
-    }
-    let validMins = "";
-    if (!isNaN(parseInt(state.timeMins))) {
-      let m = parseInt(state.timeMins);
-      m = m % 60;
-      if (m === 0) {
-        validMins = "00";
-      } else if (m < 10) {
-        validMins = "0"+m;
-      } else {
-        validMins = ""+m;
-      }
-    }
+    const hourString = ""+this.state.timeHours;
+    const minString = ""+this.state.timeMins;
 
     return (
       <KeyboardAvoidingView contentContainerStyle={{ flex: 1 }} behavior="padding">
@@ -185,11 +201,11 @@ export default class CustomEventScreen extends Component {
           <H3>Choose a time:</H3>
           <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
             <View style={ styles.timeInputContainer }>
-              <TextInput keyboardType='numeric' style={[styles.timeInput, { borderColor: validHours.length > 0 ? '#DDD' : '#F00' }]} value={ validHours } onChangeText={ this.handleHoursChange.bind(this) } onBlur={ this.validateForm.bind(this) } />
+              <TextInput keyboardType='numeric' style={[styles.timeInput, { borderColor: hourString.length > 0 ? '#DDD' : '#F00' }]} value={ hourString } onChangeText={ this.handleHoursChange.bind(this) } />
             </View>
             <Text style={ styles.timeColon }>:</Text>
             <View style={ styles.timeInputContainer }>
-              <TextInput keyboardType='numeric' style={[styles.timeInput, { borderColor: validMins.length > 0 ? '#DDD' : '#F00' }] } value={ validMins } onChangeText={ this.handleMinsChange.bind(this) } onBlur={ this.validateForm.bind(this) } />
+              <TextInput keyboardType='numeric' style={[styles.timeInput, { borderColor: minString.length > 0 ? '#DDD' : '#F00' }] } value={ minString } onChangeText={ this.handleMinsChange.bind(this) } />
             </View>
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', marginLeft: 15 }}>
               <Text style={{ fontSize: 15, padding: 5 }}>AM</Text>
@@ -202,7 +218,6 @@ export default class CustomEventScreen extends Component {
           <View style={[styles.inputContainer, { borderColor: state.title.length > 0 ? '#DDD' : '#F00' }]}>
             <TextInput
               placeholder="Type your title here"
-              onBlur={ this.validateForm.bind(this) }
               onChangeText={ this.handleTitleChange.bind(this) }
               style={ styles.lineInput }
               value={ state.title }
