@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
+  Switch,
   Text,
   TouchableOpacity,
   View
@@ -46,6 +47,19 @@ class MoreScreen extends React.Component {
         <MenuItem key="hotelmap"   link="HotelMap"   text="Hotel Map"            icon="map"    { ...this.props } />
         <MenuItem key="feedback"   link="Feedback"   text="Feedback"             icon="pencil" { ...this.props } />
         <MenuItem key="about"      link="About"      text="About"                icon="help"   { ...this.props } />
+        <Text style={ styles.settingsTitle }>SETTINGS</Text>
+        <View style={ styles.settingContainer }>
+          <View style={ styles.switchContainer }>
+            <Text style={{ fontSize: 18 }}>Hide past events</Text>
+            <Switch />
+          </View>
+          <Text style={ styles.settingDescriptionText }>
+            OFF. Events in the Schedule and on your to-do list are displayed.
+          </Text>
+          <Text style={ styles.settingDescriptionText }>
+            ON. Events and to-do items more than 2 hours old are hidden.
+          </Text>
+        </View>
       </ScrollView>
     )
   }
@@ -66,7 +80,32 @@ let styles = StyleSheet.create({
     width: window.width,
   },
   menuItemText: {
-    fontSize: 16
+    fontSize: 18
+  },
+  settingsTitle: {
+    backgroundColor: '#DDD',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F00',
+    color: '#778',
+    fontSize: 12,
+    fontWeight: 'bold',
+    paddingHorizontal: 10,
+    paddingVertical: 6
+  },
+  settingContainer: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#DDD',
+    padding: 15
+  },
+  switchContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  settingDescriptionText: {
+    fontSize: 15,
+    paddingVertical: 5,
+    width: window.width * 0.7
   }
 });
 

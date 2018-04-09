@@ -140,7 +140,7 @@ export default StackNavigator({
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    backgroundColor: '#DDE',
+    backgroundColor: '#DDD',
     flex: 1,
     justifyContent: 'center'
   },

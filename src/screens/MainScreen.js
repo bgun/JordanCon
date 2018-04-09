@@ -84,9 +84,6 @@ export default class MainScreen extends React.Component {
         loaded: true
       });
     });
-    global.settings = {
-      sortGuestsByLastName: true
-    };
   }
 
   render() {

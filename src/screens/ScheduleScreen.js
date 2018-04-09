@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
     height: 50
   },
   scroll: {
-    backgroundColor: '#FFF',
+    backgroundColor: '#DDD',
     flex: 1,
     marginTop: 90
   },

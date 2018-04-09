@@ -86,7 +86,7 @@ export default StackNavigator({
 
 const styles = StyleSheet.create({
   scroll: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#DDD',
     flex: 1
   },
   listHeader: {

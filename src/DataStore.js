@@ -51,16 +51,18 @@ export default class DataStore {
     Promise.all([
       this._fetchFromStorage(),
       this._fetchFromNetwork(),
-      this._fetchTodos()
+      this._fetchTodos(),
+      this._fetchSettings()
     ]).then(results => {
       let msg = "";
       let storageData = results[0];
       let networkData = results[1];
-      let todosData   = results[2];
+      let todosArray  = results[2];
+      let settingsObj = results[3];
       let con_data = {};
 
-      if (!todosData) {
-        todosData = [];
+      if (!todosArray) {
+        todosArray = [];
       }
 
       if (storageData && networkData) {
@@ -89,7 +91,7 @@ export default class DataStore {
 
       this._data = con_data;
 
-      todosData = todosData.map(item => {
+      todosArray = todosArray.map(item => {
         if (typeof item === 'string') {
           return {
             event_id: item
@@ -99,7 +101,8 @@ export default class DataStore {
         }
       });
       
-      this._data.todos = todosData;
+      this._data.todos = todosArray;
+      this._data.settings = settingsObj;
 
       let all_events = [];
       this._data.tracks.forEach(track => {
@@ -168,6 +171,26 @@ export default class DataStore {
     });
   }
 
+  _fetchSettings() {
+    return new Promise((resolve, reject) => {
+      AsyncStorage.getItem('settings')
+        .then(resp => {
+          let settings = {};
+          try {
+            settings = JSON.parse(resp);
+          } catch(e) {
+            console.error(e);
+          }
+          resolve(settings);
+        })
+        .catch(e => {
+          global.makeToast("Error fetching settings", "error");
+          resolve(false);
+        })
+        .done();
+    });
+  }
+
   _fetchTodos() {
     return new Promise((resolve, reject) => {
       AsyncStorage.getItem('todo')
@@ -186,6 +209,18 @@ export default class DataStore {
         })
         .done();
     });
+  }
+
+  _saveSettings() {
+    let settings = this._data.settings;
+    AsyncStorage.setItem('settings', JSON.stringify(todos))
+      .then(resp => {
+        console.log("saving settings");
+      })
+      .catch(e => {
+        global.makeToast("Error saving settings", "error");
+      })
+      .done();
   }
 
   _saveTodos() {
@@ -356,9 +391,10 @@ export default class DataStore {
     return this._data.images[key];
   }
 
-  /**
-   *  
-   */
+  getSettings() {
+    return this._data.settings;
+  }
+
   getTodosArray() {
     let arr = this._data.todos
       .map(todo => this.getEventById(todo.event_id))
@@ -384,5 +420,10 @@ export default class DataStore {
       return e.title.toLowerCase().indexOf(text.toLowerCase()) > -1;
     });
     return results;
+  }
+
+  updateSettings(obj) {
+    Object.assign(this._data.settings, obj);
+    this._saveSettings();
   }
 }

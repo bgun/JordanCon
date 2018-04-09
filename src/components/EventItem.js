@@ -57,8 +57,6 @@ export default class EventItem extends Component {
 
 const styles = StyleSheet.create({
   item: {
-    backgroundColor: 'white',
-    borderRadius: 3,
     flex: 1,
     flexDirection: 'row',
     paddingHorizontal: 10,

@@ -6,16 +6,14 @@ let _borderColor = '#DDDDDD';
 
 export default {
   floatingList: {
-    backgroundColor: '#FFFFFF',
-    borderColor: _borderColor,
+    backgroundColor: '#DDD',
     borderRadius: 5,
-    borderBottomWidth: 1,
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
     marginTop: 10
   },
   floatingListItem: {
-    borderColor: _borderColor,
-    borderTopWidth: 1
+    borderRadius: 5,
+    backgroundColor: '#FFF',
+    marginVertical: 1,
+    marginHorizontal: 2
   }
 }
