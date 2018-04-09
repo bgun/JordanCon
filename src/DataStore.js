@@ -290,14 +290,13 @@ export default class DataStore {
   }
 
   /**
-   *  Find and return the first valid event, whether it's from the calendar or
-   *  the custom list. Yes, todos of calendar events would return just a "bare"
-   *  event_id object, but as this returns the first event found, it will always
-   *  return a valid calendar event before it reaches the todo list.
+   *  Find and return the first valid event, whether it's from the calendar
+   *  or the custom list.
    */
   getEventById(event_id) {
     let foundEvent = _.find(this.getAllEvents(), e => e.event_id === event_id);
-    let foundTodo  = _.find(this.getTodosArray(), e => e.event_id === event_id);
+    // Do not use getTodosArray here, as that uses getEventById
+    let foundTodo  = _.find(this._data.todos, e => e.event_id === event_id);
 
     let ev = null;
 
@@ -348,13 +347,22 @@ export default class DataStore {
     }
     return guest;
   }
+
+  getHeaderPhotos() {
+    return this._data.header_photos;
+  }
   
   getImage(key) {
     return this._data.images[key];
   }
 
+  /**
+   *  
+   */
   getTodosArray() {
-    let arr = this._data.todos.filter(todo => !!todo.event_id);
+    let arr = this._data.todos
+      .map(todo => this.getEventById(todo.event_id))
+      .filter(todo => !!todo.event_id);
     return arr;
   }
 

@@ -54,6 +54,18 @@ class DashboardScreen extends Component {
     });
   }
 
+  componentDidMount() {
+    /*
+    "Peek" the scroll
+    setTimeout(() => {
+      this.refs["headerPhotos"].scrollTo({ x: 20, animated: true });
+    }, 1000);
+    setTimeout(() => {
+      this.refs["headerPhotos"].scrollTo({ x: 0, animated: true });
+    }, 2000);
+    */
+  }
+
   componentWillUnmount() {
     this._focusSub.remove();
   }
@@ -61,14 +73,33 @@ class DashboardScreen extends Component {
   render() {
     let todos = _.sortBy(global.Store.getTodosArray(), ["day", "time"]);
     let dataSource = this.state.dataSource.cloneWithRows(todos);
+    let headerPhotos = global.Store.getHeaderPhotos();
 
     return (
       <View style={ styles.container }>
         <ScrollView style={{ flex: 1, flexDirection: 'column' }}>
-          <Image style={{ height: getHeroHeight(), width: window.width }} source={{
-            uri: global.Store.getImage('DASHBOARD'),
-            cache: 'force-cache'
-          }} />
+          <ScrollView horizontal={ true } snapToInterval={ window.width } decelerationRate="fast" ref="headerPhotos">
+            { headerPhotos.map((photo, index) => (
+              <View style={{ width: window.width, height: getHeroHeight() }}>
+                <Image style={{ height: getHeroHeight(), width: window.width }} source={{
+                  uri: photo.src,
+                  cache: 'force-cache'
+                }} />
+
+                { index < headerPhotos.length - 1 ? (
+                  <View style={{ backgroundColor: "#00000088", position: 'absolute', right: 5, top: (getHeroHeight() / 2)-30, paddingHorizontal: 1, paddingVertical: 10, borderRadius: 10 }}>
+                    <Icon size={ 20 } name="chevron-right" color="white" />
+                  </View>
+                ) : null }
+
+                { photo.description ? (
+                  <View style={{ backgroundColor: "#000000AA", padding: 10, position: "absolute", bottom: 0 }}>
+                    <Text style={{ color: "white" }}>{ photo.description }</Text>
+                  </View>
+                ) : null }
+              </View>
+            ))}
+          </ScrollView>
           <Text style={ styles.todoTitleText }>MY TO-DO LIST</Text>
           { global.Store.getTodosArray().length > 0 ? (
           <ListView
