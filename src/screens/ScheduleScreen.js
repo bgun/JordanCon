@@ -5,9 +5,9 @@ import React, { Component } from 'react';
 import {
   Dimensions,
   InteractionManager,
-  ListView,
   Modal,
   ScrollView,
+  SectionList,
   StyleSheet,
   Text,
   TextInput,
@@ -74,21 +74,6 @@ class ScheduleScreen extends Component {
   constructor(props) {
     super();
 
-    let getSectionData = (dataBlob, sectionID) => {
-      return dataBlob[sectionID];
-    };
-
-    let getRowData = (dataBlob, sectionID, rowID) => {
-      return dataBlob[sectionID+':'+rowID];
-    };
-
-    this.dataSource = new ListView.DataSource({
-      getRowData     : getRowData,
-      getSectionData : getSectionData,
-      rowHasChanged           : (r1, r2) => r1 !== r2,
-      sectionHeaderHasChanged : (s1, s2) => s1 !== s2
-    });
-
     this.state = {
       currentTrack: global.Store.getDefaultTrack(),
       modalVisible: false,
@@ -134,43 +119,36 @@ class ScheduleScreen extends Component {
     });
   }
 
-  renderSectionHeader(sectionData, sectionID) {
-    return (
-      <View style={[ styles.section, { backgroundColor: global.Store.getColor('highlight') } ]}>
-        <Text style={ styles.sectionText }>
-          { sectionData.format('dddd, MMMM D').toUpperCase() }
-        </Text>
-      </View>
-    );
+  renderSectionHeader(data) {
+    if (data && data.section) {
+      return (
+        <Text style={[styles.sectionHeader, { backgroundColor: global.Store.getColor('highlight') }]}>{ data.section.title }</Text>
+      );
+    } else {
+      return null;
+    }
   }
 
-  renderRow(rowData) {
-    return <EventItem navigation={ this.props.navigation } key={ rowData.event_id } event_id={ rowData.event_id } />;
-  }
-
-  updateDataSource(events) {
-    let dataBlob = {};
-    let sectionIDs = [];
-    let rowIDs     = [];
-    let currentDay = null;
-  
-    events.forEach(e => {
-      if (e.dayOfWeek !== currentDay) {
-        sectionIDs.push(e.dayOfWeek);
-        dataBlob[e.dayOfWeek] = e.momentDate;
-        rowIDs.push([]);
-        currentDay = e.dayOfWeek;
-      }
-      rowIDs[rowIDs.length-1].push(e.event_id);
-      dataBlob[e.dayOfWeek+':'+e.event_id] = e;
-    });
-
-    return this.dataSource.cloneWithRowsAndSections(dataBlob, sectionIDs, rowIDs)
+  renderItem(rowData) {
+    const item = rowData.item;
+    return <EventItem navigation={ this.props.navigation } key={ item.event_id } event_id={ item.event_id } />;
   }
 
   render() {
-    let events = global.Store.getEventsByTrack(this.state.currentTrack);
-    let ds = this.updateDataSource(events);
+    let sections = [];
+    let lastDay = null;
+    global.Store.getEventsByTrack(this.state.currentTrack).forEach(item => {
+      if (lastDay === item.day) {
+        sections[sections.length-1].data.push(item);
+      } else {
+        const title = moment(item.day+" "+item.time).format('dddd, MMMM D').toUpperCase();
+        sections.push({
+          title: title,
+          data: [item]
+        });
+        lastDay = item.day;
+      }
+    });
 
     return (
       <View style={{ flex: 1 }}>
@@ -192,11 +170,12 @@ class ScheduleScreen extends Component {
               <Text style={{ fontSize: 15, fontWeight: "bold" }}>{ this.state.currentTrack }</Text>
               <Icon size={ 18 } color={ '#000000AA' } name="chevron-down" style={{ marginLeft: 6 }} />
             </TouchableOpacity>
-            <ListView
+            <SectionList
               style={ styles.scroll }
-              dataSource={ ds }
-              renderRow={ this.renderRow.bind(this) }
-              renderSectionHeader={ this.renderSectionHeader }
+              sections={ sections }
+              renderItem={ this.renderItem.bind(this) }
+              renderSectionHeader={ this.renderSectionHeader.bind(this) }
+              keyExtractor={(item, index) => item.event_id }
             />
           </View>
         ) }
@@ -304,18 +283,16 @@ const styles = StyleSheet.create({
       left: 0,
     width: window.width
   },
-  section: {
+  sectionHeader: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: 'bold',
+    opacity: 0.85,
     paddingHorizontal: 10,
     paddingVertical: 15,
     shadowColor: "#000",
     shadowOpacity: 0.5,
     shadowRadius: 10
-  },
-  sectionText: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: 'bold',
-    opacity: 0.85
   },
   showTrackModalBtn: {
     alignItems: 'center',
