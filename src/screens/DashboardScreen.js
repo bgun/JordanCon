@@ -87,7 +87,7 @@ class DashboardScreen extends Component {
                 }} />
 
                 { index < headerPhotos.length - 1 ? (
-                  <View style={{ backgroundColor: "#00000088", position: 'absolute', right: 5, top: (getHeroHeight() / 2)-30, paddingHorizontal: 1, paddingVertical: 10, borderRadius: 10 }}>
+                  <View style={{ backgroundColor: "#00000066", position: 'absolute', right: 3, top: (getHeroHeight() / 2)-40, paddingHorizontal: 2, paddingVertical: 15, borderRadius: 10 }}>
                     <Icon size={ 20 } name="chevron-right" color="white" />
                   </View>
                 ) : null }

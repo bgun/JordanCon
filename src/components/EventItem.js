@@ -1,5 +1,7 @@
 'use strict';
 
+import _      from 'lodash';
+import moment from 'moment';
 import React, { Component } from 'react';
 
 import {
@@ -8,8 +10,6 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-
-import _      from 'lodash';
 
 import Icon from 'react-native-vector-icons/Entypo';
 
@@ -35,6 +35,11 @@ export default class EventItem extends Component {
         borderLeftWidth: 8,
         borderLeftColor: event.labelColor
       };
+    }
+
+    const eventIsPast = moment().add(11, 'day') > moment(event.day+" "+event.time).add(2, 'hour');
+    if (global.Store.getSettings().hidePastEvents && eventIsPast) {
+      return null;
     }
 
     return (

@@ -21,11 +21,6 @@ export default class GuestItem extends Component {
     return (
       <TouchableOpacity style={[globalStyles.floatingListItem, styles.item]} onPress={ () => navigate("GuestDetail", { guest_id: guest.guest_id }) }>
         <Text style={ styles.text }>{ guest.name }</Text>
-        { this.props.showCount ? (
-        <View style={{ borderRadius: 5, borderWidth: 1, borderColor: '#DDD', backgroundColor: '#F4F4F4', paddingHorizontal: 3 }}>
-          <Text style={{ color: global.Store.getColor('highlight'), fontSize: 14, fontWeight: 'bold', padding: 3 }}>{ guest.event_count }</Text>
-        </View>
-        ) : null }
       </TouchableOpacity>
     );
   }

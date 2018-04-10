@@ -25,6 +25,12 @@ import FeedbackScreen   from './FeedbackScreen';
 import HotelMapScreen   from './HotelMapScreen';
 
 
+const SETTINGS_DESC = {
+  "hidePastEvents_true":  "ON. Events and to-do items more than 2 hours old are hidden.",
+  "hidePastEvents_false": "OFF. All events in the Schedule and on your to-do list are displayed."
+};
+
+
 class MenuItem extends React.Component {
 
   render() {
@@ -40,6 +46,17 @@ class MenuItem extends React.Component {
 
 class MoreScreen extends React.Component {
 
+  constructor() {
+    super();
+    this.state = Object.assign({}, global.Store.getSettings());
+  }
+
+  onHidePastEventsSwitch(bool) {
+    const update = { hidePastEvents: bool };
+    this.setState(update);
+    global.Store.updateSettings(update);
+  }
+
   render() {
     return (
       <ScrollView style={ styles.container }>
@@ -47,17 +64,15 @@ class MoreScreen extends React.Component {
         <MenuItem key="hotelmap"   link="HotelMap"   text="Hotel Map"            icon="map"    { ...this.props } />
         <MenuItem key="feedback"   link="Feedback"   text="Feedback"             icon="pencil" { ...this.props } />
         <MenuItem key="about"      link="About"      text="About"                icon="help"   { ...this.props } />
+
         <Text style={ styles.settingsTitle }>SETTINGS</Text>
         <View style={ styles.settingContainer }>
           <View style={ styles.switchContainer }>
             <Text style={{ fontSize: 18 }}>Hide past events</Text>
-            <Switch />
+            <Switch value={ this.state.hidePastEvents } onValueChange={ this.onHidePastEventsSwitch.bind(this) } />
           </View>
           <Text style={ styles.settingDescriptionText }>
-            OFF. Events in the Schedule and on your to-do list are displayed.
-          </Text>
-          <Text style={ styles.settingDescriptionText }>
-            ON. Events and to-do items more than 2 hours old are hidden.
+            { SETTINGS_DESC["hidePastEvents_"+this.state.hidePastEvents] }
           </Text>
         </View>
       </ScrollView>
@@ -89,6 +104,7 @@ let styles = StyleSheet.create({
     color: '#778',
     fontSize: 12,
     fontWeight: 'bold',
+    marginTop: 10,
     paddingHorizontal: 10,
     paddingVertical: 6
   },

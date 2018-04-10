@@ -64,6 +64,9 @@ export default class DataStore {
       if (!todosArray) {
         todosArray = [];
       }
+      if (!settingsObj) {
+        settingsObj = {};
+      }
 
       if (storageData && networkData) {
         // we have both, take whichever is newer
@@ -213,7 +216,7 @@ export default class DataStore {
 
   _saveSettings() {
     let settings = this._data.settings;
-    AsyncStorage.setItem('settings', JSON.stringify(todos))
+    AsyncStorage.setItem('settings', JSON.stringify(settings))
       .then(resp => {
         console.log("saving settings");
       })
