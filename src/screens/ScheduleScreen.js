@@ -284,15 +284,14 @@ const styles = StyleSheet.create({
     width: window.width
   },
   sectionHeader: {
-    color: 'white',
+    color: '#FFFFFF99',
     fontSize: 14,
     fontWeight: 'bold',
-    opacity: 0.85,
     paddingHorizontal: 10,
     paddingVertical: 15,
     shadowColor: "#000",
-    shadowOpacity: 0.5,
-    shadowRadius: 10
+    shadowOpacity: 0.2,
+    shadowRadius: 3
   },
   showTrackModalBtn: {
     alignItems: 'center',
