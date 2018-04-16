@@ -286,6 +286,23 @@ export default class DataStore {
     return this._data.content[key];
   }
 
+  getSortedContentItems() {
+    return _.sortBy(this._data.more_content, 'sort_priority');
+  }
+
+  getContentByLabel(label) {
+    const content = this._data.more_content.filter(page => page.label === label);
+    if (content.length === 1) {
+      return content[0];
+    } else {
+      return { content_sections: ['<p>Error</p>'] };
+    }
+  }
+
+  getContentPages() {
+    return this._data.more_content;
+  }
+
   /**
    *  Returns an array of Moment days corresponding to the dates the
    *  convention operates.

@@ -112,6 +112,7 @@ export default class HotelMapScreen extends React.Component {
     return (
       <ScrollView style={ styles.container }
         {...this._panResponder.panHandlers}
+        minimumZoomScale={ 0.5 }
         maximumZoomScale={ 2 }
         bounces={ false }
       >

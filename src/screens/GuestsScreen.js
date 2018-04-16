@@ -54,6 +54,7 @@ class GuestsList extends React.Component {
         data={ guestsArray }
         renderItem={ ({item}) => <GuestItem showCount={ true } navigation={ this.props.navigation } key={ item.guest_id } guest_id={ item.guest_id } /> }
         stickyHeaderIndices={[0]}
+        keyExtractor={(item, index) => item.guest_id }
         ListHeaderComponent={(
           <View style={ styles.listHeader }>
             <TouchableOpacity onPress={ () => this.handleSort('name') } style={[ styles.sortButton, { borderTopRightRadius: 0, borderBottomRightRadius: 0, backgroundColor: this.state.sortField === 'name' ? global.Store.getColor('highlight') : '#EEE' }]}>
