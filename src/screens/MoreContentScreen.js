@@ -63,11 +63,22 @@ const styles = StyleSheet.create({
 });
 const htmlStyles = StyleSheet.create({
   h3: {
-    fontSize: 25
+    fontSize: 25,
+    paddingTop: 20
+  },
+  h4: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    borderTopWidth: 1,
+    borderColor: '#DDD',
+    paddingTop: 20,
+    marginTop: 20
   },
   p: {
     fontSize: 16,
-    lineHeight: 22
+    lineHeight: 22,
+    paddingVertical: 5,
+    margin: 0
   },
   strong: {
     fontWeight: 'bold'

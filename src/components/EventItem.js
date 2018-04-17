@@ -37,7 +37,7 @@ export default class EventItem extends Component {
       };
     }
 
-    const eventIsPast = moment().add(11, 'day') > moment(event.day+" "+event.time).add(2, 'hour');
+    const eventIsPast = moment() > moment(event.day+" "+event.time).add(2, 'hour');
     if (global.Store.getSettings().hidePastEvents && eventIsPast) {
       return null;
     }
