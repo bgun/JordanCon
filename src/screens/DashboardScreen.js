@@ -81,8 +81,8 @@ class DashboardScreen extends Component {
                 }} />
 
                 { index < headerPhotos.length - 1 ? (
-                  <View style={{ backgroundColor: "black", opacity: 0.3, position: 'absolute', right: 3, top: (getHeroHeight() / 2)-40, paddingHorizontal: 2, paddingVertical: 15, borderRadius: 10 }}>
-                    <Entypo size={ 20 } name="chevron-right" color="white" />
+                  <View style={{ backgroundColor: "white", opacity: 0.5, position: 'absolute', right: 3, top: (getHeroHeight() / 2)-40, paddingHorizontal: 2, paddingVertical: 15, borderRadius: 10 }}>
+                    <Entypo size={ 20 } name="chevron-right" color="black" />
                   </View>
                 ) : null }
 
