@@ -39,6 +39,7 @@ export default class LabelColorPicker extends React.Component {
           const isCur = state.labelColor === color;
           return (
             <TouchableOpacity
+              key={ ""+color }
               onPress={ () => this.onColorChange(color) }
               style={{ alignItems: 'center', justifyContent: 'center', borderRadius: 7, borderWidth: isCur ? 3 : 1, borderColor: isCur ? '#555' : '#DDD', marginRight: 5 }}>
               <View style={{ borderRadius: 4, backgroundColor: color, height: 30, margin: 2, width: 40, justifyContent: 'center', alignItems: 'center' }}>

@@ -1,27 +1,40 @@
 {
   "expo": {
-    "sdkVersion": "25.0.0",
+    "sdkVersion": "32.0.0",
     "name": "JordanCon",
     "icon": "./assets/icon_1200.png",
-    "version": "4.0.1",
+    "version": "4.0.2",
     "slug": "jordancon",
+    "privacy": "public",
     "splash": {
       "image": "./assets/splash.png",
-      "backgroundColor": "#000000"
+      "backgroundColor": "#000000",
+      "resizeMode": "cover"
     },
     "loading": {
       "hideExponentText": true
     },
     "ios": {
       "bundleIdentifier": "org.jordancon.iosapp",
-      "buildNumber": "3",
+      "buildNumber": "1",
       "supportsTablet": true
     },
     "android": {
       "package": "org.jordancon.android",
       "permissions": [],
-      "versionCode": 40003
+      "versionCode": 40200
     },
-    "orientation": "portrait"
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "orientation": "portrait",
+    "platforms": [
+      "android",
+      "ios"
+    ],
+    "description": "JordanCon is a fantasy literature convention founded in honor of the late author, Robert Jordan. Jordan was the author of the best-selling The Wheel of Time series."
   }
 }

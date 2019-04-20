@@ -15,7 +15,9 @@ import {
 } from 'react-native';
 
 
-import { StackRouter, TabNavigator, StackNavigator } from 'react-navigation';
+import { StackRouter, createAppContainer, createBottomTabNavigator } from 'react-navigation';
+
+import { Entypo } from '@expo/vector-icons';
 
 import DashboardStack from './DashboardScreen';
 import ScheduleStack  from './ScheduleScreen';
@@ -27,7 +29,14 @@ import Toast from '../components/Toast';
 import DataStore from '../DataStore';
 import globalStyles from '../globalStyles';
 
-let MainNavigator = TabNavigator({
+const iconNameMap = {
+  "Home" : "home",
+  "Schedule": "calendar",
+  "Panelists": "users",
+  "More": "dots-three-horizontal"
+};
+
+let MainNavigator = createBottomTabNavigator({
   Home: {
     screen: DashboardStack,
     path: ''
@@ -36,7 +45,7 @@ let MainNavigator = TabNavigator({
     screen: ScheduleStack,
     path: 'schedule'
   },
-  Guests: {
+  Panelists: {
     screen: GuestsStack,
     path: 'guests'
   },
@@ -46,8 +55,14 @@ let MainNavigator = TabNavigator({
   }
 }, {
   tabBarPosition: 'bottom',
+  defaultNavigationOptions: ({ navigation }) => ({
+    tabBarIcon: ({ focused, horizontal, tintColor }) => {
+      const { routeName } = navigation.state;
+      return <Entypo name={ iconNameMap[routeName] } size={ 24 } color={ tintColor } />;
+    },
+  }),
   tabBarOptions: {
-    activeTintColor: '#333',
+    activeTintColor: "#333",
     style: {
       height: 50
     },
@@ -65,6 +80,7 @@ let MainNavigator = TabNavigator({
     } 
   }
 });
+const AppContainer = createAppContainer(MainNavigator);
 
 export default class MainScreen extends React.Component {
 
@@ -89,7 +105,7 @@ export default class MainScreen extends React.Component {
   render() {
     let main;
     if (this.state.loaded) {
-      main = <MainNavigator />
+      main = <AppContainer />
     } else {
       main = <Text>Loading...</Text>
     }

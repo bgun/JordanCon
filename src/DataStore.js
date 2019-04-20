@@ -341,7 +341,11 @@ export default class DataStore {
   }
 
   getDimension(key) {
-    return this._data.dimensions[key];
+    if (this._data.dimensions && this._data.dimensions[key]) {
+      return this._data.dimensions[key];
+    } else {
+      console.warn("Dimension not found");
+    }
   }
 
   /**

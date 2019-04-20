@@ -37,7 +37,7 @@ export default class MoreContentScreen extends Component {
         ) : null }
 
         { content.content_sections.map(section => (
-          <HtmlView value={ section } stylesheet={ htmlStyles } />
+          <HtmlView key={ section } value={ section } stylesheet={ htmlStyles } />
         ) ) }
 
         <View style={{ height: 50 }} />

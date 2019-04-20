@@ -13,9 +13,7 @@ import {
   View
 } from 'react-native';
 
-import { StackNavigator } from 'react-navigation'
-
-import Icon from 'react-native-vector-icons/Entypo';
+import { createStackNavigator } from 'react-navigation'
 
 import GuestItem from '../components/GuestItem';
 
@@ -24,14 +22,6 @@ import EventDetailScreen from './EventDetailScreen';
 
 
 class GuestsList extends React.Component {
-
-  static navigationOptions = {
-    title: "Guests",
-    tabBarLabel: "Guests",
-    tabBarIcon: ({ tintColor }) => (
-      <Icon name="users" size={ 24 } color={ tintColor } />
-    )
-  };
 
   constructor() {
     super();
@@ -71,17 +61,10 @@ class GuestsList extends React.Component {
 
 }
 
-export default StackNavigator({
+export default createStackNavigator({
   "GuestsList"  : { screen: GuestsList },
   "EventDetail" : { screen: EventDetailScreen },
   "GuestDetail" : { screen: GuestDetailScreen }
-}, {
-  navigationOptions: {
-    tabBarLabel: "Guests",
-    tabBarIcon: ({ tintColor }) => (
-      <Icon name="users" size={ 24 } color={ tintColor } />
-    )
-  }
 });
 
 
@@ -102,7 +85,7 @@ const styles = StyleSheet.create({
   },
   sortButton: {
     alignItems: 'center',
-    background: '#EEE',
+    backgroundColor: '#EEE',
     borderRadius: 10,
     height: 32,
     justifyContent: 'center',

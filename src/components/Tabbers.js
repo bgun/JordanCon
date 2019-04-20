@@ -9,14 +9,14 @@ import {
 
 import { Actions } from 'react-native-router-flux';
 
-import Icon from 'react-native-vector-icons/Entypo';
+import { Entypo } from '@expo/vector-icons';
 
 
 class TabIcon extends React.Component {
   render() {
     return (
       <TouchableOpacity style={ styles.tab } onPress={ this.props.onPress }>
-        <Icon name={ this.props.icon } color='#558' size={ this.props.iconSize || 20 } />
+        <Entypo name={ this.props.icon } color='#558' size={ this.props.iconSize || 20 } />
         <Text style={{ color: '#335' }}>{ this.props.text }</Text>
       </TouchableOpacity>
     );

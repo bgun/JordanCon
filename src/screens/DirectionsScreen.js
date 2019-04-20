@@ -13,8 +13,6 @@ import {
 
 import { StackNavigator } from 'react-navigation'
 
-import Icon from 'react-native-vector-icons/Entypo';
-
 import { H1, H2, H3, H4 } from '../components/Headings';
 
 import globalStyles from '../globalStyles';

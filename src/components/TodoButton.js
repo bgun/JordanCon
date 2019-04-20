@@ -10,7 +10,7 @@ import {
 
 import LabelColorPicker from './LabelColorPicker';
 
-import Icon from 'react-native-vector-icons/Entypo';
+import { Entypo } from '@expo/vector-icons';
 
 import globalStyles from '../globalStyles';
 
@@ -91,7 +91,7 @@ export default class FeedbackButton extends Component {
     } else {
       view = (
       <TouchableOpacity style={[styles.buttonAdd, { backgroundColor: global.Store.getColor('highlight') }]} onPress={ () => this.handleAddTodo() }>
-        <Icon name="star" size={16} color="white" />
+        <Entypo name="star" size={16} color="white" />
         <Text style={[styles.buttonText, { marginLeft: 10 }]}>Add to my todo list</Text>
       </TouchableOpacity>
       );

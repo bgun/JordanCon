@@ -2,33 +2,27 @@
   "name": "JordanCon",
   "version": "0.1.0",
   "private": true,
-  "devDependencies": {
-    "flow-bin": "^0.56.0",
-    "jest-expo": "25.0.0",
-    "react-native-scripts": "1.11.1",
-    "react-test-renderer": "16.2.0"
-  },
-  "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
+  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "react-native-scripts start",
-    "eject": "react-native-scripts eject",
-    "flow": "flow",
-    "android": "react-native-scripts android",
-    "ios": "react-native-scripts ios",
-    "test": "node node_modules/jest/bin/jest.js"
+    "start": "expo start",
+    "clean-start": "rm -rf node_modules && rm yarn.lock && yarn install && expo start -c",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "eject": "expo eject"
   },
   "CON_INFO_URL": "https://bgun.github.io/nenji-assets/JordanCon/con_info.json",
-  "jest": {
-    "preset": "jest-expo"
-  },
   "dependencies": {
     "base-64": "^0.1.0",
-    "expo": "^25.0.0",
-    "lodash": "^4.17.5",
-    "react": "16.2.0",
-    "react-native": "0.52.0",
-    "react-native-htmlview": "^0.12.1",
+    "expo": "32.0.0",
+    "lodash": "^4.17.11",
+    "react": "16.5.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
+    "react-native-htmlview": "^0.13.0",
+    "react-native-image-zoom-viewer": "^2.2.25",
     "react-native-view-transformer-next": "0.0.29",
-    "react-navigation": "^1.0.0-beta.30"
+    "react-navigation": "^3.8.1"
+  },
+  "devDependencies": {
+    "babel-preset-expo": "^5.0.0"
   }
 }

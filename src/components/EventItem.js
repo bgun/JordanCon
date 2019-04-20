@@ -11,7 +11,7 @@ import {
   View
 } from 'react-native';
 
-import Icon from 'react-native-vector-icons/Entypo';
+import { Entypo } from '@expo/vector-icons';
 
 import globalStyles from '../globalStyles';
 
@@ -22,8 +22,21 @@ export default class EventItem extends Component {
     let event = global.Store.getEventById(this.props.event_id);
     const isTodo = global.Store.isTodo(event.event_id);
 
+
+    // Event not found
     if (!event) {
       console.warn("Event not found for <EventItem>!", this.props.event_id);
+      return null;
+    }
+    
+    // Old item detected
+    if (moment(event.day, "YYYY-MM-DD").year() !== moment().year()) {
+      return null;
+    }
+
+    // "Hiding past events" is checked
+    const eventIsPast = moment() > moment(event.day+" "+event.time).add(2, 'hour');
+    if (global.Store.getSettings().hidePastEvents && eventIsPast) {
       return null;
     }
 
@@ -37,11 +50,6 @@ export default class EventItem extends Component {
       };
     }
 
-    const eventIsPast = moment() > moment(event.day+" "+event.time).add(2, 'hour');
-    if (global.Store.getSettings().hidePastEvents && eventIsPast) {
-      return null;
-    }
-
     return (
       <TouchableOpacity style={[globalStyles.floatingListItem, styles.item, labelStyle ]} onPress={ () => navigate("EventDetail", { navigation: this.props.navigation, event_id: event.event_id }) }>
         <View style={{ flex: 1 }}>
@@ -52,7 +60,7 @@ export default class EventItem extends Component {
           </View>
         </View>
         { isTodo ? (
-          <Icon name="star" color={ global.Store.getColor('highlight') } size={20} style={{ paddingTop: 8, paddingRight: 8 }} />
+          <Entypo name="star" color={ global.Store.getColor('highlight') } size={20} style={{ paddingTop: 8, paddingRight: 8 }} />
         ) : null }
       </TouchableOpacity>
     );

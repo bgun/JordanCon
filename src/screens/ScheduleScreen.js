@@ -18,7 +18,7 @@ import {
 import moment from 'moment';
 import _ from 'lodash';
 
-import { StackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation';
 
 import EventItem from '../components/EventItem';
 
@@ -28,7 +28,7 @@ import FeedbackScreen    from './FeedbackScreen';
 
 import globalStyles from '../globalStyles';
 
-import Icon from 'react-native-vector-icons/Entypo';
+import { Entypo } from '@expo/vector-icons';
 
 let window = Dimensions.get('window');
 
@@ -55,7 +55,7 @@ class TrackModal extends Component {
               <TouchableOpacity onPress={ this.props.onCancel } style={ styles.modalCancelBtn }>
                 <Text style={{ color: '#E00' }}>Cancel</Text>
               </TouchableOpacity>
-              { global.Store.getTrackNames().map(track => <TrackItem track={ track } onPress={ this.props.onTrackChange } /> ) }
+              { global.Store.getTrackNames().map(track => <TrackItem key={ track } track={ track } onPress={ this.props.onTrackChange } /> ) }
             </ScrollView>
           </View>
         </View>
@@ -168,7 +168,7 @@ class ScheduleScreen extends Component {
                 this.setState({ modalVisible: true });
               }}>
               <Text style={{ fontSize: 15, fontWeight: "bold" }}>{ this.state.currentTrack }</Text>
-              <Icon size={ 18 } color={ '#000000AA' } name="chevron-down" style={{ marginLeft: 6 }} />
+              <Entypo size={ 18 } color={ '#000000AA' } name="chevron-down" style={{ marginLeft: 6 }} />
             </TouchableOpacity>
             <SectionList
               style={ styles.scroll }
@@ -180,7 +180,7 @@ class ScheduleScreen extends Component {
           </View>
         ) }
         <View style={ styles.filterContainer }>
-          <Icon style={ styles.searchIcon } name="magnifying-glass" size={ 24 } color={ '#00000066' } />
+          <Entypo style={ styles.searchIcon } name="magnifying-glass" size={ 24 } color={ '#00000066' } />
           <TextInput placeholder="Search all events" style={ styles.filterInput } value={ this.state.filterText } onChangeText={ this.handleFilterInput.bind(this) } />
         </View>
  
@@ -190,18 +190,11 @@ class ScheduleScreen extends Component {
   }
 }
 
-export default StackNavigator({
+export default createStackNavigator({
   "Schedule":     { screen: ScheduleScreen },
   "EventDetail" : { screen: EventDetailScreen },
   "GuestDetail" : { screen: GuestDetailScreen },
   "Feedback"    : { screen: FeedbackScreen },
-}, {
-  navigationOptions: {
-    tabBarLabel: "Schedule",
-    tabBarIcon: ({ tintColor }) => (
-      <Icon name="calendar" size={ 24 } color={ tintColor } />
-    )
-  }
 });
 
 

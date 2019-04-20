@@ -14,9 +14,9 @@ import {
   View
 } from 'react-native';
 
-import { StackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation';
 
-import Icon from 'react-native-vector-icons/Entypo';
+import { Entypo } from '@expo/vector-icons';
 
 import _ from 'lodash';
 
@@ -37,10 +37,6 @@ let getHeroHeight = function() {
 
 class DashboardScreen extends Component {
 
-  static navigationOptions = {
-    title: "Dashboard"
-  };
-
   constructor(props) {
     super();
     this.state = {
@@ -55,15 +51,13 @@ class DashboardScreen extends Component {
   }
 
   componentDidMount() {
-    /*
-    "Peek" the scroll
+    // "Peek" the scroll
     setTimeout(() => {
       this.refs["headerPhotos"].scrollTo({ x: 20, animated: true });
-    }, 1000);
+    }, 3000);
     setTimeout(() => {
       this.refs["headerPhotos"].scrollTo({ x: 0, animated: true });
-    }, 2000);
-    */
+    }, 4000);
   }
 
   componentWillUnmount() {
@@ -80,7 +74,7 @@ class DashboardScreen extends Component {
         <ScrollView style={{ flex: 1, flexDirection: 'column' }}>
           <ScrollView horizontal={ true } snapToInterval={ window.width } decelerationRate="fast" ref="headerPhotos">
             { headerPhotos.map((photo, index) => (
-              <View style={{ width: window.width, height: getHeroHeight() }}>
+              <View key={ "photo"+index } style={{ width: window.width, height: getHeroHeight() }}>
                 <Image style={{ height: getHeroHeight(), width: window.width }} source={{
                   uri: photo.src,
                   cache: 'force-cache'
@@ -88,7 +82,7 @@ class DashboardScreen extends Component {
 
                 { index < headerPhotos.length - 1 ? (
                   <View style={{ backgroundColor: "black", opacity: 0.3, position: 'absolute', right: 3, top: (getHeroHeight() / 2)-40, paddingHorizontal: 2, paddingVertical: 15, borderRadius: 10 }}>
-                    <Icon size={ 20 } name="chevron-right" color="white" />
+                    <Entypo size={ 20 } name="chevron-right" color="white" />
                   </View>
                 ) : null }
 
@@ -124,17 +118,15 @@ class DashboardScreen extends Component {
 
 }
 
-export default StackNavigator({
-  "Dashboard"   : { screen: DashboardScreen },
+export default createStackNavigator({
+  "Dashboard"   : {
+    screen: DashboardScreen,
+    navigationOptions: ({ navigation }) => ({
+      title: "Dashboard"
+    })
+  },
   "CustomEvent" : { screen: CustomEventScreen },
   "EventDetail" : { screen: EventDetailScreen }
-}, {
-  navigationOptions: {
-    tabBarLabel: "Home",
-    tabBarIcon: ({ tintColor }) => (
-      <Icon name="home" size={ 24 } color={ tintColor } />
-    )
-  }
 });
 
 const styles = StyleSheet.create({

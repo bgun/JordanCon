@@ -11,9 +11,9 @@ import {
   View
 } from 'react-native'
 
-import { StackNavigator } from 'react-navigation'
+import { createStackNavigator } from 'react-navigation'
 
-import Icon from 'react-native-vector-icons/Entypo';
+import { Entypo } from '@expo/vector-icons';
 
 import globalStyles from '../globalStyles';
 
@@ -35,7 +35,7 @@ class MenuItem extends React.Component {
   render() {
     return (
       <TouchableOpacity style={ styles.menuItem } onPress={ () => this.props.navigation.navigate(this.props.link) }>
-        <Icon name={ this.props.icon } size={16} color={ global.Store.getColor('highlightDark') } />
+        <Entypo name={ this.props.icon } size={16} color={ global.Store.getColor('highlightDark') } />
         <View style={{ width: 16 }} />
         <Text style={ styles.menuItemText }>{ this.props.label }</Text>
       </TouchableOpacity>
@@ -47,7 +47,7 @@ class MoreContentMenuItem extends React.Component {
   render() {
     return (
       <TouchableOpacity style={ styles.menuItem } onPress={ () => this.props.navigation.navigate('MoreContent', { label: this.props.label }) }>
-        <Icon name={ this.props.icon } size={16} color={ global.Store.getColor('highlightDark') } />
+        <Entypo name={ this.props.icon } size={16} color={ global.Store.getColor('highlightDark') } />
         <View style={{ width: 16 }} />
         <Text style={ styles.menuItemText }>{ this.props.label }</Text>
       </TouchableOpacity>
@@ -139,18 +139,10 @@ let styles = StyleSheet.create({
 });
 
 
-export default StackNavigator({
+export default createStackNavigator({
   MoreScreen : { screen: MoreScreen },
   Directions : { screen: DirectionsScreen },
   MoreContent: { screen: MoreContentScreen },
   HotelMap   : { screen: HotelMapScreen },
   Feedback   : { screen: FeedbackScreen }
-}, {
-  navigationOptions: {
-    title: "More",
-    tabBarLabel: "More",
-    tabBarIcon: ({ tintColor }) => (
-      <Icon name="dots-three-horizontal" size={ 24 } color={ tintColor } />
-    )
-  }
 });

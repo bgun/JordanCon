@@ -1,7 +1,10 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
-# API keys
+# Keys and secrets
 SECRETS.json
+*.key
+*.p12
+*.mobileprovision
 
 # expo
 .expo/
