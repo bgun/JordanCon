@@ -32,6 +32,8 @@ import { Entypo } from '@expo/vector-icons';
 
 let window = Dimensions.get('window');
 
+const ALL_EVENTS_LABEL = "All Events";
+
 
 class TrackItem extends Component {
   render() {
@@ -55,6 +57,9 @@ class TrackModal extends Component {
               <TouchableOpacity onPress={ this.props.onCancel } style={ styles.modalCancelBtn }>
                 <Text style={{ color: '#E00' }}>Cancel</Text>
               </TouchableOpacity>
+              <TouchableOpacity key="all" onPress={ () => this.props.onTrackChange(ALL_EVENTS_LABEL) } style={ styles.modalTrackItem }>
+                <Text style={{ fontSize: 16 }}>{ ALL_EVENTS_LABEL }</Text>
+              </TouchableOpacity>
               { global.Store.getTrackNames().map(track => <TrackItem key={ track } track={ track } onPress={ this.props.onTrackChange } /> ) }
             </ScrollView>
           </View>
@@ -75,7 +80,7 @@ class ScheduleScreen extends Component {
     super();
 
     this.state = {
-      currentTrack: global.Store.getDefaultTrack(),
+      currentTrack: ALL_EVENTS_LABEL, // global.Store.getDefaultTrack(),
       modalVisible: false,
       searchResults: []
     };
@@ -137,7 +142,14 @@ class ScheduleScreen extends Component {
   render() {
     let sections = [];
     let lastDay = null;
-    global.Store.getEventsByTrack(this.state.currentTrack).forEach(item => {
+    let eventsArray = [];
+    if (!this.state.currentTrack || this.state.currentTrack === ALL_EVENTS_LABEL) {
+      eventsArray = global.Store.getAllEvents();
+    } else {
+      eventsArray = global.Store.getEventsByTrack(this.state.currentTrack);
+    }
+
+    eventsArray.forEach(item => {
       if (lastDay === item.day) {
         sections[sections.length-1].data.push(item);
       } else {
