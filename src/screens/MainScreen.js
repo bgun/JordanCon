@@ -23,6 +23,7 @@ import DashboardStack from './DashboardScreen';
 import ScheduleStack  from './ScheduleScreen';
 import GuestsStack    from './GuestsScreen';
 import MoreStack      from './MoreScreen';
+import LoadingScreen  from './LoadingScreen';
 
 import Toast from '../components/Toast';
 
@@ -107,7 +108,7 @@ export default class MainScreen extends React.Component {
     if (this.state.loaded) {
       main = <AppContainer />
     } else {
-      main = <Text>Loading...</Text>
+      main = <LoadingScreen />
     }
     return (
       <View style={[ styles.mainView, { paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight } ]}>
@@ -126,14 +127,6 @@ let styles = StyleSheet.create({
     shadowColor: "#000000",
     shadowOpacity: 0.5,
     shadowRadius: 12
-  },
-  loading: {
-    backgroundColor: 'white',
-    opacity: 0.5,
-    position: 'absolute',
-    top: -20,
-    left: 0,
-    right: 0
   },
   scene: {
     paddingTop: 63
