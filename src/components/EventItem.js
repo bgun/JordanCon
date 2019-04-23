@@ -50,6 +50,8 @@ export default class EventItem extends Component {
       };
     }
 
+    let trackName = event.custom ? "Custom Event" : event.trackName;
+
     return (
       <TouchableOpacity style={[globalStyles.floatingListItem, styles.item, labelStyle ]} onPress={ () => navigate("EventDetail", { navigation: this.props.navigation, event_id: event.event_id }) }>
         <View style={{ flex: 1 }}>
@@ -58,6 +60,9 @@ export default class EventItem extends Component {
             <Text style={ styles.timeText  }>{ event.formattedDateTime }</Text>
             <Text style={ [styles.locationText, { color: global.Store.getColor('highlightAlt') }] }>{ event.location }</Text>
           </View>
+          { this.props.showTrack === true
+           ? <Text style={ [styles.trackText, { color: global.Store.getColor('highlight') }]}>{ trackName }</Text>
+           : null }
         </View>
         { isTodo ? (
           <Entypo name="star" color={ global.Store.getColor('highlight') } size={20} style={{ paddingTop: 8, paddingRight: 8 }} />
@@ -85,5 +90,10 @@ const styles = StyleSheet.create({
   locationText: {
     fontSize: 13,
     marginLeft: 13
-  }
+  },
+  trackText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    textTransform: 'uppercase'
+  },
 });

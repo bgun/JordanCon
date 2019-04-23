@@ -101,7 +101,7 @@ class DashboardScreen extends Component {
             style={{ flex: 1, width: window.width }}
             removeClippedSubviews={ false }
             dataSource={ dataSource }
-            renderRow={ rowData => <EventItem key={ rowData.event_id } navigation={ this.props.navigation } event_id={ rowData.event_id } /> }
+            renderRow={ rowData => <EventItem key={ rowData.event_id } navigation={ this.props.navigation } event_id={ rowData.event_id } showTrack={ true } /> }
           />
           ) : (
           <View style={ styles.todoEmpty }>

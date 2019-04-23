@@ -34,7 +34,7 @@ export default class EventDetailScreen extends Component {
       console.warn("Event not found!", event_id);
       return null;
     }
-    let trackName = (event.custom ? "Custom Event" : event.trackName).toUpperCase();
+    let trackName = event.custom ? "Custom Event" : event.trackName;
 
     return (
       <ScrollView style={ styles.view }>
@@ -79,7 +79,8 @@ const styles = StyleSheet.create({
   trackText: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 5
+    marginBottom: 5,
+    textTransform: 'uppercase'
   },
   timeText: {
     color: '#666666',

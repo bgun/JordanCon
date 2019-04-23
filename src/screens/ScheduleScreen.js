@@ -136,7 +136,7 @@ class ScheduleScreen extends Component {
 
   renderItem(rowData) {
     const item = rowData.item;
-    return <EventItem navigation={ this.props.navigation } key={ item.event_id } event_id={ item.event_id } />;
+    return <EventItem navigation={ this.props.navigation } key={ item.event_id } event_id={ item.event_id } showTrack={ this.state.currentTrack === ALL_EVENTS_LABEL } />;
   }
 
   render() {
@@ -153,7 +153,7 @@ class ScheduleScreen extends Component {
       if (lastDay === item.day) {
         sections[sections.length-1].data.push(item);
       } else {
-        const title = moment(item.day+" "+item.time).format('dddd, MMMM D').toUpperCase();
+        const title = moment(item.day+" "+item.time).format('dddd, MMMM D');
         sections.push({
           title: title,
           data: [item]
@@ -289,14 +289,15 @@ const styles = StyleSheet.create({
     width: window.width
   },
   sectionHeader: {
-    color: '#FFFFFF99',
-    fontSize: 14,
+    color: '#FFFFFFAA',
+    fontSize: 15,
     fontWeight: 'bold',
     paddingHorizontal: 10,
     paddingVertical: 15,
     shadowColor: "#000",
     shadowOpacity: 0.2,
-    shadowRadius: 3
+    shadowRadius: 3,
+    textTransform: 'uppercase'
   },
   showTrackModalBtn: {
     alignItems: 'center',
