@@ -54,7 +54,7 @@ export default class FeedbackScreen extends Component {
 
     let formData = new FormData();
     formData.append("from", "ben@con-nexus.bgun.me");
-    formData.append("to", "ben@bengundersen.com");
+    formData.append("to", "ben@bengundersen.com,communications@jordancon.org");
 
     let conName = global.Store.getConName();
 
